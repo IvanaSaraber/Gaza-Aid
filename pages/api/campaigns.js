@@ -5,13 +5,18 @@ export default async function handler(req, res) {
 
   const url = `https://api.airtable.com/v0/${baseId}/${tableName}`;
 
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${apiKey}`
-    }
-  });
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`
+      }
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  res.status(200).json(data.records);
+    res.status(200).json(data.records);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Failed to fetch data' });
+  }
 }
