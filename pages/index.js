@@ -9,12 +9,12 @@ useEffect(() => {
   async function fetchCampaigns() {
     try {
       const res = await fetch('https://gaza-aid-1byz.vercel.app/api/campaigns')
-      console.log('Response:', res) // Log de hele response om te kijken of deze goed aankomt
+      console.log('Response:', res) // Log de volledige response
       if (!res.ok) {
         throw new Error(`API error: ${res.status}`)
       }
       const data = await res.json()
-      console.log('Data van API:', data) // Log de data die we ontvangen
+      console.log('Data ontvangen:', data) // Log de ontvangen data
       setCampaigns(data.records || [])
     } catch (err) {
       console.error('Fout bij ophalen campagnes:', err)
@@ -26,6 +26,7 @@ useEffect(() => {
 
   fetchCampaigns()
 }, [])
+
 
 
   if (loading) return <p>⏳ Laden...</p>
