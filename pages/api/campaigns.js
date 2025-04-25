@@ -1,22 +1,28 @@
-export default async function handler(req, res) {
-  const apiKey = process.env.AIRTABLE_API_KEY;
-  const baseId = process.env.AIRTABLE_BASE_ID;
-  const tableName = process.env.AIRTABLE_TABLE_NAME;
+// pages/api/campaigns.ts
+import type { NextApiRequest, NextApiResponse } from 'next'
 
-  const url = `https://api.airtable.com/v0/${baseId}/${tableName}`;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const apiKey = process.env.AIRTABLE_API_KEY
+  const baseId = process.env.AIRTABLE_BASE_ID
+  const tableName = 'MainTable'
+
+  const url = `https://api.airtable.com/v0/${baseId}/${tableName}`
 
   try {
-    const response = await fetch(url, {
+    const airtableRes = await fetch(url, {
       headers: {
         Authorization: `Bearer ${apiKey}`
       }
-    });
+    })
 
-    const data = await response.json();
+    if (!airtableRes.ok) {
+      const error = await airtableRes.text()
+      return res.status(airtableRes.status).json({ error })
+    }
 
-    res.status(200).json(data.records);
+    const data = await airtableRes.json()
+    res.status(200).json(data)
   } catch (error) {
-    console.error('Error fetching data:', error);
-    res.status(500).json({ error: 'Failed to fetch data' });
+    res.status(500).json({ error: 'Something went wrong', details: error })
   }
 }
