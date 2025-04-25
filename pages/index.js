@@ -1,32 +1,31 @@
-import { useEffect, useState } from 'react';
+// pages/index.tsx
+import { useEffect, useState } from 'react'
 
 export default function Home() {
-  const [campaigns, setCampaigns] = useState([]);
+  const [data, setData] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetch('/api/campaigns')
       .then((res) => res.json())
-      .then((data) => setCampaigns(data.records || []));
-  }, []);
+      .then((json) => {
+        setData(json.records || [])
+        setLoading(false)
+      })
+  }, [])
 
   return (
     <div>
-      <h1>GazaAid Campagnes</h1>
-      {campaigns.length === 0 ? (
-        <p>Laden...</p>
+      <h1>GazaAid campagnes</h1>
+      {loading ? (
+        <p>Loading...</p>
       ) : (
         <ul>
-          {campaigns.map((item) => (
-            <li key={item.id}>
-              <strong>{item.fields.Titel}</strong><br />
-              €{item.fields.Gedoneerd} van €{item.fields.Doelbedrag}
-            </li>
+          {data.map((item) => (
+            <li key={item.id}>{item.fields?.Titel}</li>
           ))}
         </ul>
       )}
     </div>
-  );
+  )
 }
-
-
-// Redeploy trigger
