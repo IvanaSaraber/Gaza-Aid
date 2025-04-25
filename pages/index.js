@@ -1,28 +1,44 @@
-// pages/index.tsx
 import { useEffect, useState } from 'react'
 
 export default function Home() {
-  const [data, setData] = useState<any[]>([])
+  const [campaigns, setCampaigns] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    fetch('/api/campaigns')
-      .then((res) => res.json())
-      .then((json) => {
-        setData(json.records || [])
+    async function fetchCampaigns() {
+      try {
+        const res = await fetch('/api/campaigns')
+        if (!res.ok) {
+          throw new Error(`API error: ${res.status}`)
+        }
+        const data = await res.json()
+        setCampaigns(data.records || [])
+      } catch (err) {
+        setError(err.message)
+      } finally {
         setLoading(false)
-      })
+      }
+    }
+
+    fetchCampaigns()
   }, [])
 
+  if (loading) return <p>⏳ Laden...</p>
+  if (error) return <p>❌ Fout: {error}</p>
+
   return (
-    <div>
-      <h1>GazaAid campagnes</h1>
-      {loading ? (
-        <p>Loading...</p>
+    <div style={{ padding: '2rem' }}>
+      <h1>🎯 GazaAid Campagnes</h1>
+      {campaigns.length === 0 ? (
+        <p>Geen campagnes gevonden.</p>
       ) : (
         <ul>
-          {data.map((item) => (
-            <li key={item.id}>{item.fields?.Titel}</li>
+          {campaigns.map(c => (
+            <li key={c.id}>
+              <strong>{c.fields?.["Campagnenaam"] || 'Naamloos'}</strong> – €{c.fields?.["Opgehaald bedrag"] || 0}
+            </li>
+
           ))}
         </ul>
       )}
