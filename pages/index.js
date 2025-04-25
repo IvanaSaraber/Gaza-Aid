@@ -8,7 +8,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchCampaigns() {
       try {
-        const res = await fetch('/api/campaigns')
+        const res = await fetch('https://gaza-aid-1byz.vercel.app/api/campaigns')
         if (!res.ok) {
           throw new Error(`API error: ${res.status}`)
         }
