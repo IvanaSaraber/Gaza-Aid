@@ -5,24 +5,28 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
-    async function fetchCampaigns() {
-      try {
-        const res = await fetch('https://gaza-aid-1byz.vercel.app/api/campaigns')
-        if (!res.ok) {
-          throw new Error(`API error: ${res.status}`)
-        }
-        const data = await res.json()
-        setCampaigns(data.records || [])
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
+useEffect(() => {
+  async function fetchCampaigns() {
+    try {
+      const res = await fetch('https://gaza-aid-1byz.vercel.app/api/campaigns')
+      console.log('Response:', res) // Log de hele response om te kijken of deze goed aankomt
+      if (!res.ok) {
+        throw new Error(`API error: ${res.status}`)
       }
+      const data = await res.json()
+      console.log('Data van API:', data) // Log de data die we ontvangen
+      setCampaigns(data.records || [])
+    } catch (err) {
+      console.error('Fout bij ophalen campagnes:', err)
+      setError(err.message)
+    } finally {
+      setLoading(false)
     }
+  }
 
-    fetchCampaigns()
-  }, [])
+  fetchCampaigns()
+}, [])
+
 
   if (loading) return <p>⏳ Laden...</p>
   if (error) return <p>❌ Fout: {error}</p>
