@@ -42,25 +42,61 @@ export default function Home() {
           <div key={c.id} style={{
             border: '1px solid #e0e0e0',
             borderRadius: '16px',
-            padding: '1.5rem',
-            boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
+            overflow: 'hidden',
             backgroundColor: '#ffffff',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'space-between',
+            boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
             transition: 'transform 0.2s ease',
             cursor: 'pointer'
           }}
           onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
           onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            <h2 style={{ fontSize: '1.4rem', marginBottom: '1rem', color: '#333' }}>
-              {c.fields?.["Campagnenaam"] || 'Naamloos'}
-            </h2>
-            <p style={{ marginBottom: '0.5rem', color: '#666' }}>
-              <strong>Opgehaald:</strong> €{c.fields?.["Opgehaald bedrag"] || 0}
-            </p>
-            {/* Hier kunnen we straks een afbeelding of knop toevoegen */}
+            {/* Afbeelding */}
+            {c.fields?.Afbeelding ? (
+              <img 
+                src={c.fields.Afbeelding} 
+                alt={c.fields?.["Campagnenaam"] || 'Campagne afbeelding'} 
+                style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+              />
+            ) : (
+              <div style={{ width: '100%', height: '200px', backgroundColor: '#eee' }} />
+            )}
+
+            {/* Inhoud */}
+            <div style={{ padding: '1rem', flexGrow: 1 }}>
+              <h2 style={{ fontSize: '1.4rem', marginBottom: '1rem', color: '#333' }}>
+                {c.fields?.["Campagnenaam"] || 'Naamloos'}
+              </h2>
+              <p style={{ marginBottom: '1rem', color: '#666' }}>
+                <strong>Opgehaald:</strong> €{c.fields?.["Opgehaald bedrag"] || 0}
+              </p>
+            </div>
+
+            {/* Knop */}
+            <div style={{ padding: '1rem' }}>
+              <a 
+                href={c.fields?.["Campagnelink"] || '#'} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style={{
+                  display: 'block',
+                  backgroundColor: '#0070f3',
+                  color: 'white',
+                  textAlign: 'center',
+                  padding: '0.75rem',
+                  borderRadius: '8px',
+                  fontWeight: 'bold',
+                  textDecoration: 'none',
+                  transition: 'background-color 0.2s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#005bb5'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#0070f3'}
+              >
+                Bekijk campagne
+              </a>
+            </div>
           </div>
         ))}
       </div>
