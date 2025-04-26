@@ -4,6 +4,7 @@ export default function Home() {
   const [campaigns, setCampaigns] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [daysFilter, setDaysFilter] = useState(0) // 0 voor geen filter, anders het aantal dagen
 
   useEffect(() => {
     async function fetchCampaigns() {
@@ -24,82 +25,77 @@ export default function Home() {
     fetchCampaigns()
   }, [])
 
+  // Functie om het aantal dagen sinds de campagne is gestart te berekenen
+  const calculateDaysOpen = (startDate) => {
+    const start = new Date(startDate)
+    const now = new Date()
+    const diffTime = Math.abs(now - start)
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) // Converteer naar dagen
+  }
+
+  // Filter de campagnes op basis van het aantal dagen
+  const filteredCampaigns = campaigns.filter((campaign) => {
+    const daysOpen = calculateDaysOpen(campaign.fields?.["Startdatum"]) // Pas aan voor juiste kolomnaam
+    return daysFilter === 0 || daysOpen <= daysFilter
+  })
+
   if (loading) return <p>⏳ Laden...</p>
   if (error) return <p>❌ Fout: {error}</p>
 
   return (
-    <div style={{ padding: '2rem', backgroundColor: '#f7f9fc', minHeight: '100vh' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '2rem' }}>
-        🎯 GazaAid Campagnes
-      </h1>
+    <div style={{ padding: '2rem' }}>
+      <h1>🎯 GazaAid Campagnes</h1>
 
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-        gap: '2rem',
-      }}>
-        {campaigns.map((c) => (
-          <div key={c.id} style={{
-            border: '1px solid #e0e0e0',
-            borderRadius: '16px',
-            overflow: 'hidden',
-            backgroundColor: '#ffffff',
-            display: 'flex',
-            flexDirection: 'column',
-            boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
-            transition: 'transform 0.2s ease',
-            cursor: 'pointer'
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-          >
-            {/* Afbeelding */}
-            {c.fields?.Afbeelding ? (
-              <img 
-                src={Array.isArray(c.fields.Afbeelding) ? c.fields.Afbeelding[0]?.url : c.fields.Afbeelding} 
-                alt={c.fields?.["Campagnenaam"] || 'Campagne afbeelding'} 
-                style={{ width: '100%', height: '200px', objectFit: 'cover' }}
-              />
-            ) : (
-              <div style={{ width: '100%', height: '200px', backgroundColor: '#eee' }} />
-            )}
+      {/* Filter Optie */}
+      <div style={{ marginBottom: '1rem' }}>
+        <label htmlFor="daysFilter">Filter op aantal dagen open:</label>
+        <select
+          id="daysFilter"
+          value={daysFilter}
+          onChange={(e) => setDaysFilter(Number(e.target.value))}
+          style={{ padding: '0.5rem' }}
+        >
+          <option value={0}>Alle Campagnes</option>
+          <option value={7}>Binnen 7 dagen</option>
+          <option value={30}>Binnen 30 dagen</option>
+          <option value={60}>Binnen 60 dagen</option>
+          <option value={90}>Binnen 90 dagen</option>
+        </select>
+      </div>
 
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          gap: '1.5rem',
+          marginTop: '2rem',
+        }}
+      >
+        {filteredCampaigns.map((c) => {
+          const daysOpen = calculateDaysOpen(c.fields?.["Startdatum"])
 
-            {/* Inhoud */}
-            <div style={{ padding: '1rem', flexGrow: 1 }}>
-              <h2 style={{ fontSize: '1.4rem', marginBottom: '1rem', color: '#333' }}>
+          return (
+            <div
+              key={c.id}
+              style={{
+                border: '1px solid #ddd',
+                borderRadius: '10px',
+                padding: '1rem',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                backgroundColor: '#fff',
+              }}
+            >
+              <h2 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>
                 {c.fields?.["Campagnenaam"] || 'Naamloos'}
               </h2>
-              <p style={{ marginBottom: '1rem', color: '#666' }}>
-                <strong>Opgehaald:</strong> €{c.fields?.["Opgehaald bedrag"] || 0}
-              </p>
-            </div>
-
-            {/* Knop */}
-            <div style={{ padding: '1rem' }}>
-              <a 
-                href={c.fields?.["Campagnelink"] || '#'} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                style={{
-                  display: 'block',
-                  backgroundColor: '#0070f3',
-                  color: 'white',
-                  textAlign: 'center',
-                  padding: '0.75rem',
-                  borderRadius: '8px',
-                  fontWeight: 'bold',
-                  textDecoration: 'none',
-                  transition: 'background-color 0.2s ease'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#005bb5'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#0070f3'}
-              >
-                Bekijk campagne
+              <p><strong>Opgehaald:</strong> €{c.fields?.["Opgehaald bedrag"] || 0}</p>
+              <p><strong>Aantal Dagen Open:</strong> {daysOpen} dagen</p>
+              <a href={c.fields?.["GoFundMe Link"]} target="_blank" rel="noopener noreferrer">
+                Ga naar de campagne
               </a>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )
