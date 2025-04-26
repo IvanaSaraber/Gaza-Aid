@@ -43,13 +43,44 @@ export default function Home() {
             borderRadius: '10px',
             padding: '1rem',
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            backgroundColor: '#fff'
-          }}>
-            <h2 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>
+            backgroundColor: '#fff',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
+            <h2 style={{
+              fontSize: '1.5rem', 
+              marginBottom: '0.5rem', 
+              color: '#333'
+            }}>
               {c.fields?.["Campagnenaam"] || 'Naamloos'}
             </h2>
-            <p><strong>Opgehaald:</strong> €{c.fields?.["Opgehaald bedrag"] || 0}</p>
-            {/* Hier kunnen we later een knop of afbeelding toevoegen */}
+            <p style={{ fontSize: '1rem', color: '#555', marginBottom: '1rem' }}>
+              <strong>Opgehaald:</strong> €{c.fields?.["Opgehaald bedrag"] || 0}
+            </p>
+            <div style={{
+              fontSize: '1.2rem',
+              fontWeight: 'bold',
+              color: '#2d7cdb',
+              marginBottom: '1rem'
+            }}>
+              €{c.fields?.["Opgehaald bedrag"] || 0}
+            </div>
+            <div style={{
+              backgroundColor: '#2d7cdb',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '5px',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s ease'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#1f63b6'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#2d7cdb'}>
+              Bekijk Details
+            </div>
           </div>
         ))}
       </div>
