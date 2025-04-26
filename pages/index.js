@@ -28,59 +28,39 @@ export default function Home() {
   if (error) return <p>❌ Fout: {error}</p>
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>🎯 GazaAid Campagnes</h1>
+    <div style={{ padding: '2rem', backgroundColor: '#f7f9fc', minHeight: '100vh' }}>
+      <h1 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '2rem' }}>
+        🎯 GazaAid Campagnes
+      </h1>
 
       <div style={{ 
         display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-        gap: '1.5rem',
-        marginTop: '2rem'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+        gap: '2rem',
       }}>
         {campaigns.map((c) => (
           <div key={c.id} style={{
-            border: '1px solid #ddd',
-            borderRadius: '10px',
-            padding: '1rem',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            backgroundColor: '#fff',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+            border: '1px solid #e0e0e0',
+            borderRadius: '16px',
+            padding: '1.5rem',
+            boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
+            backgroundColor: '#ffffff',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            transition: 'transform 0.2s ease',
+            cursor: 'pointer'
           }}
-          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
-          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            <h2 style={{
-              fontSize: '1.5rem', 
-              marginBottom: '0.5rem', 
-              color: '#333'
-            }}>
+            <h2 style={{ fontSize: '1.4rem', marginBottom: '1rem', color: '#333' }}>
               {c.fields?.["Campagnenaam"] || 'Naamloos'}
             </h2>
-            <p style={{ fontSize: '1rem', color: '#555', marginBottom: '1rem' }}>
+            <p style={{ marginBottom: '0.5rem', color: '#666' }}>
               <strong>Opgehaald:</strong> €{c.fields?.["Opgehaald bedrag"] || 0}
             </p>
-            <div style={{
-              fontSize: '1.2rem',
-              fontWeight: 'bold',
-              color: '#2d7cdb',
-              marginBottom: '1rem'
-            }}>
-              €{c.fields?.["Opgehaald bedrag"] || 0}
-            </div>
-            <div style={{
-              backgroundColor: '#2d7cdb',
-              color: 'white',
-              padding: '0.5rem 1rem',
-              borderRadius: '5px',
-              textAlign: 'center',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s ease'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#1f63b6'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#2d7cdb'}>
-              Bekijk Details
-            </div>
+            {/* Hier kunnen we straks een afbeelding of knop toevoegen */}
           </div>
         ))}
       </div>
