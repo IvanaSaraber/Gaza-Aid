@@ -56,13 +56,14 @@ export default function Home() {
             {/* Afbeelding */}
             {c.fields?.Afbeelding ? (
               <img 
-                src={c.fields.Afbeelding} 
+                src={Array.isArray(c.fields.Afbeelding) ? c.fields.Afbeelding[0]?.url : c.fields.Afbeelding} 
                 alt={c.fields?.["Campagnenaam"] || 'Campagne afbeelding'} 
                 style={{ width: '100%', height: '200px', objectFit: 'cover' }}
               />
             ) : (
               <div style={{ width: '100%', height: '200px', backgroundColor: '#eee' }} />
             )}
+
 
             {/* Inhoud */}
             <div style={{ padding: '1rem', flexGrow: 1 }}>
