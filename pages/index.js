@@ -7,6 +7,7 @@ export default function Home() {
 
 useEffect(() => {
   async function fetchCampaigns() {
+    console.log('Start ophalen campagnes...')
     try {
       const res = await fetch('https://gaza-aid-1byz.vercel.app/api/campaigns')
       console.log('Response:', res) // Log de volledige response
