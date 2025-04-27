@@ -38,7 +38,7 @@ export default function Home() {
   })
 
   return (
-    <div style={{ padding: '3rem 1rem', backgroundColor: '#F8F8F8', minHeight: '100vh' }}>
+    <div style={{ padding: '3rem 1rem', backgroundColor: '#f7f9fc', minHeight: '100vh' }}>
       <h1 style={{
         textAlign: 'center',
         marginBottom: '2rem',
@@ -57,9 +57,9 @@ export default function Home() {
       <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '2rem' }}>
         <button onClick={() => setSelectedFilter('all')} style={{
           padding: '0.5rem 1rem',
-          backgroundColor: selectedFilter === 'all' ? '#A9C9FF' : '#fff',
+          backgroundColor: selectedFilter === 'all' ? '#22c55e' : '#fff',
           color: selectedFilter === 'all' ? '#fff' : '#333',
-          border: '2px solid #A9C9FF',
+          border: '2px solid #22c55e',
           borderRadius: '50px',
           fontSize: '1rem',
           fontWeight: 'bold',
@@ -70,9 +70,9 @@ export default function Home() {
         </button>
         <button onClick={() => setSelectedFilter('in-progress')} style={{
           padding: '0.5rem 1rem',
-          backgroundColor: selectedFilter === 'in-progress' ? '#B8C7D1' : '#fff',
+          backgroundColor: selectedFilter === 'in-progress' ? '#3b82f6' : '#fff',
           color: selectedFilter === 'in-progress' ? '#fff' : '#333',
-          border: '2px solid #B8C7D1',
+          border: '2px solid #3b82f6',
           borderRadius: '50px',
           fontSize: '1rem',
           fontWeight: 'bold',
@@ -83,9 +83,9 @@ export default function Home() {
         </button>
         <button onClick={() => setSelectedFilter('completed')} style={{
           padding: '0.5rem 1rem',
-          backgroundColor: selectedFilter === 'completed' ? '#FFEBB0' : '#fff',
+          backgroundColor: selectedFilter === 'completed' ? '#22c55e' : '#fff',
           color: selectedFilter === 'completed' ? '#fff' : '#333',
-          border: '2px solid #FFEBB0',
+          border: '2px solid #22c55e',
           borderRadius: '50px',
           fontSize: '1rem',
           fontWeight: 'bold',
@@ -107,13 +107,14 @@ export default function Home() {
           const doel = c.fields?.["Doelbedrag"] || 1
           const procent = Math.round((opgehaald / doel) * 100)
 
-          let progressColor = '#A9C9FF' // Pastel Blue
-          if (procent >= 90) progressColor = '#B2F5D1' // Mint green
-          else if (procent >= 50) progressColor = '#FFEBB0' // Light Yellow
+          // Kleur voor progress bar
+          let progressColor = '#f59e0b' // oranje
+          if (procent >= 90) progressColor = '#22c55e' // groen
+          else if (procent >= 50) progressColor = '#3b82f6' // blauw
 
           return (
             <div key={c.id} style={{
-              border: '1px solid #D0D0D0',
+              border: '1px solid #e0e0e0',
               borderRadius: '16px',
               overflow: 'hidden',
               backgroundColor: '#ffffff',
@@ -122,7 +123,10 @@ export default function Home() {
               boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
               cursor: 'pointer',
               transition: 'transform 0.2s ease',
-            }}>
+            }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+            >
               {/* Afbeelding */}
               {c.fields?.Afbeelding ? (
                 <img
@@ -145,7 +149,7 @@ export default function Home() {
                 {/* Progress bar */}
                 <div style={{
                   height: '10px',
-                  backgroundColor: '#F3F4F6',
+                  backgroundColor: '#e0e0e0',
                   borderRadius: '5px',
                   overflow: 'hidden'
                 }}>
@@ -179,4 +183,19 @@ export default function Home() {
                     padding: '0.75rem',
                     borderRadius: '8px',
                     fontWeight: 'bold',
-                    textDecoration
+                    textDecoration: 'none',
+                    transition: 'background-color 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#005bb5'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#0070f3'}
+                >
+                  Bekijk campagne
+                </a>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
