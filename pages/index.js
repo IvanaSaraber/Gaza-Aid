@@ -1,128 +1,204 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const [campaigns, setCampaigns] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [filter, setFilter] = useState('') // Filter state
+  const [campaigns, setCampaigns] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [filters, setFilters] = useState({
+    nearComplete: false,
+    newCampaigns: false,
+    notDonated: false,
+  });
 
   useEffect(() => {
     async function fetchCampaigns() {
       try {
-        const res = await fetch('https://gaza-aid-1byz.vercel.app/api/campaigns')
+        const res = await fetch('https://gaza-aid-1byz.vercel.app/api/campaigns');
         if (!res.ok) {
-          throw new Error(`API error: ${res.status}`)
+          throw new Error(`API error: ${res.status}`);
         }
-        const data = await res.json()
-        setCampaigns(data.records || [])
+        const data = await res.json();
+        setCampaigns(data.records || []);
       } catch (err) {
-        console.error('Fout bij ophalen campagnes:', err)
-        setError(err.message)
+        console.error('Fout bij ophalen campagnes:', err);
+        setError(err.message);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
-    fetchCampaigns()
-  }, [])
+    fetchCampaigns();
+  }, []);
 
-  const filteredCampaigns = campaigns.filter(c => {
-    if (filter === 'almost-complete') {
-      return (parseFloat(c.fields?.["Opgehaald bedrag"]) / parseFloat(c.fields?.["Doelbedrag"])) >= 0.9
-    }
-    if (filter === 'new') {
-      const createdAt = new Date(c.createdTime)
-      const now = new Date()
-      const diffInDays = (now - createdAt) / (1000 * 3600 * 24)
-      return diffInDays <= 7
-    }
-    if (filter === 'no-donation') {
-      return c.fields?.["Dagen zonder donatie"] > 7
-    }
-    return true
-  })
+  const applyFilters = (campaign) => {
+    if (filters.nearComplete && campaign.progress < 90) return false;
+    if (filters.newCampaigns && campaign.daysSinceStart > 7) return false;
+    if (filters.notDonated && campaign.daysSinceLastDonation < 7) return false;
+    return true;
+  };
 
-  const resetFilter = () => {
-    setFilter('') // Reset filter to show all campaigns
-  }
+  const clearFilters = () => {
+    setFilters({
+      nearComplete: false,
+      newCampaigns: false,
+      notDonated: false,
+    });
+  };
 
-  if (loading) return <p>⏳ Laden...</p>
-  if (error) return <p>❌ Fout: {error}</p>
+  if (loading) return <p>⏳ Laden...</p>;
+  if (error) return <p>❌ Fout: {error}</p>;
 
   return (
-    <div style={{ padding: '2rem', backgroundColor: '#F3F1E7', minHeight: '100vh', fontFamily: 'Lora, serif' }}>
-      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: '700', color: '#5C4033', marginBottom: '1rem' }}>
-          Help onschuldige burgers in Gaza
-        </h1>
+    <div style={{ padding: '2rem', backgroundColor: '#f7f9fc', minHeight: '100vh' }}>
+      <h1 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '2rem', fontWeight: 'bold' }}>
+        Help onschuldige burgers in Gaza
+      </h1>
 
-        <div style={{ display: 'inline-flex', marginBottom: '2rem' }}>
-          <button 
-            onClick={() => setFilter('almost-complete')} 
-            style={filter === 'almost-complete' ? activeFilterStyle : filterStyle}>
-            Bijna Compleet
-          </button>
-          <button 
-            onClick={() => setFilter('new')} 
-            style={filter === 'new' ? activeFilterStyle : filterStyle}>
-            Nieuw
-          </button>
-          <button 
-            onClick={() => setFilter('no-donation')} 
-            style={filter === 'no-donation' ? activeFilterStyle : filterStyle}>
-            Lang Niet Gedoneerd
-          </button>
-          <button 
-            onClick={resetFilter} 
-            style={filter === '' ? resetActiveFilterStyle : resetFilterStyle}>
-            Alle Campagnes
-          </button>
-        </div>
+      <div style={{ marginBottom: '1rem' }}>
+        <button
+          onClick={() => setFilters({ ...filters, nearComplete: !filters.nearComplete })}
+          style={{
+            padding: '10px 20px',
+            margin: '0 10px',
+            borderRadius: '50px',
+            backgroundColor: filters.nearComplete ? '#FF8C00' : '#cccccc',
+            color: '#fff',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          Bijna Compleet
+        </button>
+        <button
+          onClick={() => setFilters({ ...filters, newCampaigns: !filters.newCampaigns })}
+          style={{
+            padding: '10px 20px',
+            margin: '0 10px',
+            borderRadius: '50px',
+            backgroundColor: filters.newCampaigns ? '#FF8C00' : '#cccccc',
+            color: '#fff',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          Nieuwe Campagnes
+        </button>
+        <button
+          onClick={() => setFilters({ ...filters, notDonated: !filters.notDonated })}
+          style={{
+            padding: '10px 20px',
+            margin: '0 10px',
+            borderRadius: '50px',
+            backgroundColor: filters.notDonated ? '#FF8C00' : '#cccccc',
+            color: '#fff',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          Lang Niet Gedoneerd
+        </button>
+        <button
+          onClick={clearFilters}
+          style={{
+            padding: '10px 20px',
+            margin: '0 10px',
+            borderRadius: '50px',
+            backgroundColor: '#cccccc',
+            color: '#fff',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          Alle Filters Verwijderen
+        </button>
       </div>
 
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-        gap: '2rem'
-      }}>
-        {filteredCampaigns.map((c) => (
-          <div key={c.id} style={cardStyle}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+        {campaigns.filter(applyFilters).map((c) => (
+          <div
+            key={c.id}
+            style={{
+              border: '1px solid #e0e0e0',
+              borderRadius: '12px',
+              overflow: 'hidden',
+              backgroundColor: '#ffffff',
+              display: 'flex',
+              flexDirection: 'column',
+              boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
+              transition: 'transform 0.2s ease',
+              cursor: 'pointer',
+              padding: '1rem',
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            {/* Afbeelding */}
             {c.fields?.Afbeelding ? (
-              <img 
-                src={Array.isArray(c.fields.Afbeelding) ? c.fields.Afbeelding[0]?.url : c.fields.Afbeelding} 
-                alt={c.fields?.["Campagnenaam"] || 'Campagne afbeelding'} 
-                style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px 8px 0 0' }}
+              <img
+                src={Array.isArray(c.fields.Afbeelding) ? c.fields.Afbeelding[0]?.url : c.fields.Afbeelding}
+                alt={c.fields?.["Campagnenaam"] || 'Campagne afbeelding'}
+                style={{
+                  width: '100%',
+                  height: '200px',
+                  objectFit: 'cover',
+                  borderRadius: '8px',
+                }}
               />
             ) : (
-              <div style={{ width: '100%', height: '120px', backgroundColor: '#BDC3C7', borderRadius: '8px 8px 0 0' }} />
+              <div style={{ width: '100%', height: '200px', backgroundColor: '#eee' }} />
             )}
 
-            <div style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '240px' }}>
-              <h2 style={headingStyle}>
+            <div style={{ marginTop: '1rem' }}>
+              <h2 style={{ fontSize: '1.4rem', marginBottom: '0.5rem', color: '#333' }}>
                 {c.fields?.["Campagnenaam"] || 'Naamloos'}
               </h2>
-              <div style={{ color: '#5C4033', marginBottom: '1rem', fontSize: '0.9rem' }}>
-                <p><strong>{c.fields?.["Opgehaald bedrag"]} van de {c.fields?.["Doelbedrag"]} opgehaald</strong></p>
+              <p style={{ marginBottom: '0.5rem', color: '#666' }}>
+                {c.fields?.["Opgehaald bedrag"] && c.fields?.["Doelbedrag"]
+                  ? `${c.fields["Opgehaald bedrag"]} van ${c.fields["Doelbedrag"]} opgehaald`
+                  : 'Geen gegevens beschikbaar'}
+              </p>
+              <div style={{ fontSize: '0.9rem', color: '#666' }}>
+                <p>{`${c.fields?.["Campagnelink"] || 'Geen link'}`}</p>
               </div>
-              {/* Progress bar */}
-              <div style={{ marginBottom: '1rem' }}>
-                <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>
-                  Behaald: {((parseFloat(c.fields?.["Opgehaald bedrag"]) / parseFloat(c.fields?.["Doelbedrag"])) * 100).toFixed(2)}%
-                </div>
-                <div style={{ height: '6px', width: '100%', backgroundColor: '#BDC3C7' }}>
-                  <div style={{
-                    height: '100%',
-                    width: `${(parseFloat(c.fields?.["Opgehaald bedrag"]) / parseFloat(c.fields?.["Doelbedrag"])) * 100}%`,
-                    backgroundColor: '#5C4033',
-                    transition: 'width 0.5s ease'
-                  }} />
+              {/* Voortgangsbalk */}
+              <div style={{ marginTop: '1rem', width: '100%' }}>
+                <div
+                  style={{
+                    backgroundColor: '#eee',
+                    borderRadius: '8px',
+                    height: '12px',
+                    width: '100%',
+                    position: 'relative',
+                  }}
+                >
+                  <div
+                    style={{
+                      backgroundColor: '#FF8C00',
+                      height: '100%',
+                      width: `${c.fields["Opgehaald bedrag"] / c.fields["Doelbedrag"] * 100}%`,
+                      borderRadius: '8px',
+                    }}
+                  />
                 </div>
               </div>
-
-              <a 
-                href={c.fields?.["Campagnelink"] || '#'} 
-                target="_blank" 
+            </div>
+            <div style={{ marginTop: '1rem' }}>
+              <a
+                href={c.fields?.["Campagnelink"] || '#'}
+                target="_blank"
                 rel="noopener noreferrer"
-                style={linkStyle}
+                style={{
+                  display: 'block',
+                  backgroundColor: '#FF8C00',
+                  color: 'white',
+                  textAlign: 'center',
+                  padding: '0.75rem',
+                  borderRadius: '8px',
+                  fontWeight: 'bold',
+                  textDecoration: 'none',
+                  transition: 'background-color 0.2s ease',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FF7F00'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FF8C00'}
               >
                 Bekijk campagne
               </a>
@@ -130,93 +206,9 @@ export default function Home() {
           </div>
         ))}
       </div>
-
-      <footer style={footerStyle}>
-        <p>Gesteund door United Muslim Mothers (UMM)</p>
+      <footer style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.9rem', color: '#666' }}>
+        <p>Een UMM initiatief – United Muslim Mothers</p>
       </footer>
     </div>
-  )
-}
-
-// Styling for filter buttons
-const filterStyle = {
-  padding: '0.5rem 1rem',
-  backgroundColor: '#E2B97C',
-  border: '1px solid #D38D50',
-  borderRadius: '12px',
-  margin: '0 0.5rem',
-  cursor: 'pointer',
-  transition: 'background-color 0.3s ease'
-}
-
-const activeFilterStyle = {
-  ...filterStyle,
-  backgroundColor: '#5C4033',
-  color: '#fff',
-  borderColor: '#5C4033',
-}
-
-// Reset filter style
-const resetFilterStyle = {
-  padding: '0.5rem 1rem',
-  backgroundColor: '#BDC3C7',
-  border: '1px solid #A9A9A9',
-  borderRadius: '12px',
-  margin: '0 0.5rem',
-  cursor: 'pointer',
-  transition: 'background-color 0.3s ease'
-}
-
-const resetActiveFilterStyle = {
-  ...resetFilterStyle,
-  backgroundColor: '#5C4033',
-  color: '#fff',
-  borderColor: '#5C4033',
-}
-
-// Styling for the cards
-const cardStyle = {
-  border: '1px solid #D38D50',
-  borderRadius: '8px',
-  backgroundColor: '#ffffff',
-  display: 'flex',
-  flexDirection: 'column',
-  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-  cursor: 'pointer',
-  transition: 'transform 0.2s ease',
-  overflow: 'hidden',
-  maxHeight: '340px', 
-  padding: '0', 
-}
-
-const headingStyle = {
-  fontSize: '1.1rem',
-  marginBottom: '0.5rem',
-  color: '#5C4033',
-  fontWeight: '600',
-  lineHeight: '1.3',
-  textOverflow: 'ellipsis', 
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-}
-
-const linkStyle = {
-  display: 'block',
-  backgroundColor: '#5C4033',
-  color: 'white',
-  textAlign: 'center',
-  padding: '0.75rem',
-  borderRadius: '8px',
-  fontWeight: '600',
-  textDecoration: 'none',
-  transition: 'background-color 0.2s ease',
-}
-
-const footerStyle = {
-  textAlign: 'center',
-  marginTop: '3rem',
-  padding: '1rem',
-  backgroundColor: '#F3F1E7',
-  fontSize: '1rem',
-  color: '#5C4033',
+  );
 }
