@@ -41,6 +41,10 @@ export default function Home() {
     return true
   })
 
+  const resetFilter = () => {
+    setFilter('') // Reset filter to show all campaigns
+  }
+
   if (loading) return <p>⏳ Laden...</p>
   if (error) return <p>❌ Fout: {error}</p>
 
@@ -66,6 +70,11 @@ export default function Home() {
             onClick={() => setFilter('no-donation')} 
             style={filter === 'no-donation' ? activeFilterStyle : filterStyle}>
             Lang Niet Gedoneerd
+          </button>
+          <button 
+            onClick={resetFilter} 
+            style={filter === '' ? resetActiveFilterStyle : resetFilterStyle}>
+            Alle Campagnes
           </button>
         </div>
       </div>
@@ -142,6 +151,24 @@ const filterStyle = {
 
 const activeFilterStyle = {
   ...filterStyle,
+  backgroundColor: '#5C4033',
+  color: '#fff',
+  borderColor: '#5C4033',
+}
+
+// Reset filter style
+const resetFilterStyle = {
+  padding: '0.5rem 1rem',
+  backgroundColor: '#BDC3C7',
+  border: '1px solid #A9A9A9',
+  borderRadius: '12px',
+  margin: '0 0.5rem',
+  cursor: 'pointer',
+  transition: 'background-color 0.3s ease'
+}
+
+const resetActiveFilterStyle = {
+  ...resetFilterStyle,
   backgroundColor: '#5C4033',
   color: '#fff',
   borderColor: '#5C4033',
