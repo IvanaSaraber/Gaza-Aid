@@ -45,9 +45,9 @@ export default function Home() {
   if (error) return <p>❌ Fout: {error}</p>
 
   return (
-    <div style={{ padding: '2rem', backgroundColor: '#F9F1E7', minHeight: '100vh', fontFamily: 'Lora, serif' }}>
+    <div style={{ padding: '2rem', backgroundColor: '#F3F1E7', minHeight: '100vh', fontFamily: 'Lora, serif' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: '700', color: '#D35400', marginBottom: '1rem' }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: '700', color: '#5C4033', marginBottom: '1rem' }}>
           Help onschuldige burgers in Gaza
         </h1>
 
@@ -91,9 +91,8 @@ export default function Home() {
               <h2 style={headingStyle}>
                 {c.fields?.["Campagnenaam"] || 'Naamloos'}
               </h2>
-              <div style={{ color: '#8E7C4E', marginBottom: '1rem', fontSize: '0.9rem' }}>
-                <p><strong>Opgehaald:</strong> €{c.fields?.["Opgehaald bedrag"] || 0}</p>
-                <p><strong>Doelbedrag:</strong> €{c.fields?.["Doelbedrag"] || 0}</p>
+              <div style={{ color: '#5C4033', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                <p><strong>{c.fields?.["Opgehaald bedrag"]} van de {c.fields?.["Doelbedrag"]} opgehaald</strong></p>
               </div>
               {/* Progress bar */}
               <div style={{ marginBottom: '1rem' }}>
@@ -104,7 +103,7 @@ export default function Home() {
                   <div style={{
                     height: '100%',
                     width: `${(parseFloat(c.fields?.["Opgehaald bedrag"]) / parseFloat(c.fields?.["Doelbedrag"])) * 100}%`,
-                    backgroundColor: '#D35400',
+                    backgroundColor: '#5C4033',
                     transition: 'width 0.5s ease'
                   }} />
                 </div>
@@ -133,8 +132,8 @@ export default function Home() {
 // Styling for filter buttons
 const filterStyle = {
   padding: '0.5rem 1rem',
-  backgroundColor: '#F4CDBD',
-  border: '1px solid #F4A261',
+  backgroundColor: '#E2B97C',
+  border: '1px solid #D38D50',
   borderRadius: '12px',
   margin: '0 0.5rem',
   cursor: 'pointer',
@@ -143,14 +142,14 @@ const filterStyle = {
 
 const activeFilterStyle = {
   ...filterStyle,
-  backgroundColor: '#D35400',
+  backgroundColor: '#5C4033',
   color: '#fff',
-  borderColor: '#D35400',
+  borderColor: '#5C4033',
 }
 
 // Styling for the cards
 const cardStyle = {
-  border: '1px solid #F4A261',
+  border: '1px solid #D38D50',
   borderRadius: '8px',
   backgroundColor: '#ffffff',
   display: 'flex',
@@ -158,15 +157,15 @@ const cardStyle = {
   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
   cursor: 'pointer',
   transition: 'transform 0.2s ease',
-  overflow: 'hidden', // Ensures content is clipped within the card
-  maxHeight: '340px', // Prevent cards from getting too tall
-  padding: '0', // Remove extra padding to adjust layout
+  overflow: 'hidden',
+  maxHeight: '340px', 
+  padding: '0', 
 }
 
 const headingStyle = {
   fontSize: '1rem',
   marginBottom: '0.5rem',
-  color: '#D35400',
+  color: '#5C4033',
   fontWeight: '600',
   lineHeight: '1.3',
   textOverflow: 'ellipsis', 
@@ -176,7 +175,7 @@ const headingStyle = {
 
 const linkStyle = {
   display: 'block',
-  backgroundColor: '#D35400',
+  backgroundColor: '#5C4033',
   color: 'white',
   textAlign: 'center',
   padding: '0.75rem',
@@ -190,7 +189,7 @@ const footerStyle = {
   textAlign: 'center',
   marginTop: '3rem',
   padding: '1rem',
-  backgroundColor: '#F9F1E7',
+  backgroundColor: '#F3F1E7',
   fontSize: '1rem',
-  color: '#8E7C4E',
+  color: '#5C4033',
 }
