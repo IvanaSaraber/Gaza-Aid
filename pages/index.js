@@ -163,7 +163,7 @@ const cardStyle = {
 }
 
 const headingStyle = {
-  fontSize: '1rem',
+  fontSize: '1.1rem',
   marginBottom: '0.5rem',
   color: '#5C4033',
   fontWeight: '600',
