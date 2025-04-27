@@ -45,9 +45,13 @@ export default function Home() {
   if (error) return <p>❌ Fout: {error}</p>
 
   return (
-    <div style={{ padding: '2rem', backgroundColor: '#f4f6fc', minHeight: '100vh' }}>
+    <div style={{ padding: '2rem', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <div style={{ display: 'inline-flex', marginBottom: '1.5rem' }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#333', marginBottom: '1rem' }}>
+          Help onschuldige burgers in Gaza
+        </h1>
+
+        <div style={{ display: 'inline-flex', marginBottom: '2rem' }}>
           {/* Filter options */}
           <button 
             onClick={() => setFilter('almost-complete')} 
@@ -65,10 +69,6 @@ export default function Home() {
             Lang Niet Gedoneerd
           </button>
         </div>
-
-        <div style={{ marginBottom: '1rem', fontSize: '1.5rem', fontWeight: 'bold' }}>
-          United Muslim Mothers (UMM) Initiatief
-        </div>
       </div>
 
       <div style={{
@@ -85,7 +85,7 @@ export default function Home() {
                 style={{ width: '100%', height: '200px', objectFit: 'cover' }}
               />
             ) : (
-              <div style={{ width: '100%', height: '200px', backgroundColor: '#eee' }} />
+              <div style={{ width: '100%', height: '200px', backgroundColor: '#ddd' }} />
             )}
 
             <div style={{ padding: '1rem' }}>
@@ -139,8 +139,8 @@ export default function Home() {
 // Styling for filter buttons
 const filterStyle = {
   padding: '0.5rem 1rem',
-  backgroundColor: '#f4f6fc',
-  border: '1px solid #ddd',
+  backgroundColor: '#e0e0e0',
+  border: '1px solid #ccc',
   borderRadius: '12px',
   margin: '0 0.5rem',
   cursor: 'pointer',
@@ -156,8 +156,8 @@ const activeFilterStyle = {
 
 // Styling for the cards
 const cardStyle = {
-  border: '1px solid #ddd',
-  borderRadius: '16px',
+  border: '1px solid #ccc',
+  borderRadius: '12px',
   backgroundColor: '#ffffff',
   display: 'flex',
   flexDirection: 'column',
@@ -189,7 +189,7 @@ const footerStyle = {
   textAlign: 'center',
   marginTop: '3rem',
   padding: '1rem',
-  backgroundColor: '#f4f6fc',
+  backgroundColor: '#f5f5f5',
   fontSize: '1rem',
   color: '#666',
 }
