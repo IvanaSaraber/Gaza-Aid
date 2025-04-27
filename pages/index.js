@@ -53,12 +53,11 @@ export default function Home() {
         Help onschuldige burgers in Gaza
       </h1>
 
-      <div style={{ marginBottom: '1rem' }}>
+      <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
         <button
           onClick={() => setFilters({ ...filters, nearComplete: !filters.nearComplete })}
           style={{
             padding: '10px 20px',
-            margin: '0 10px',
             borderRadius: '50px',
             backgroundColor: filters.nearComplete ? '#FF8C00' : '#cccccc',
             color: '#fff',
@@ -72,7 +71,6 @@ export default function Home() {
           onClick={() => setFilters({ ...filters, newCampaigns: !filters.newCampaigns })}
           style={{
             padding: '10px 20px',
-            margin: '0 10px',
             borderRadius: '50px',
             backgroundColor: filters.newCampaigns ? '#FF8C00' : '#cccccc',
             color: '#fff',
@@ -86,7 +84,6 @@ export default function Home() {
           onClick={() => setFilters({ ...filters, notDonated: !filters.notDonated })}
           style={{
             padding: '10px 20px',
-            margin: '0 10px',
             borderRadius: '50px',
             backgroundColor: filters.notDonated ? '#FF8C00' : '#cccccc',
             color: '#fff',
@@ -100,7 +97,6 @@ export default function Home() {
           onClick={clearFilters}
           style={{
             padding: '10px 20px',
-            margin: '0 10px',
             borderRadius: '50px',
             backgroundColor: '#cccccc',
             color: '#fff',
@@ -156,9 +152,6 @@ export default function Home() {
                   ? `${c.fields["Opgehaald bedrag"]} van ${c.fields["Doelbedrag"]} opgehaald`
                   : 'Geen gegevens beschikbaar'}
               </p>
-              <div style={{ fontSize: '0.9rem', color: '#666' }}>
-                <p>{`${c.fields?.["Campagnelink"] || 'Geen link'}`}</p>
-              </div>
               {/* Voortgangsbalk */}
               <div style={{ marginTop: '1rem', width: '100%' }}>
                 <div
@@ -174,18 +167,28 @@ export default function Home() {
                     style={{
                       backgroundColor: '#FF8C00',
                       height: '100%',
-                      width: `${c.fields["Opgehaald bedrag"] / c.fields["Doelbedrag"] * 100}%`,
+                      width: `${(c.fields["Opgehaald bedrag"] / c.fields["Doelbedrag"]) * 100}%`,
                       borderRadius: '8px',
                     }}
                   />
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: '-20px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      fontSize: '0.9rem',
+                      color: '#FF8C00',
+                    }}
+                  >
+                    {Math.round((c.fields["Opgehaald bedrag"] / c.fields["Doelbedrag"]) * 100)}%
+                  </span>
                 </div>
               </div>
             </div>
             <div style={{ marginTop: '1rem' }}>
               <a
-                href={c.fields?.["Campagnelink"] || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#"
                 style={{
                   display: 'block',
                   backgroundColor: '#FF8C00',
