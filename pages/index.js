@@ -45,7 +45,7 @@ export default function Home() {
   if (error) return <p>❌ Fout: {error}</p>
 
   return (
-    <div style={{ padding: '2rem', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+    <div style={{ padding: '2rem', backgroundColor: '#f5f5f5', minHeight: '100vh', fontFamily: 'Poppins, sans-serif' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#333', marginBottom: '1rem' }}>
           Help onschuldige burgers in Gaza
@@ -82,29 +82,26 @@ export default function Home() {
               <img 
                 src={Array.isArray(c.fields.Afbeelding) ? c.fields.Afbeelding[0]?.url : c.fields.Afbeelding} 
                 alt={c.fields?.["Campagnenaam"] || 'Campagne afbeelding'} 
-                style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '12px 12px 0 0' }}
               />
             ) : (
-              <div style={{ width: '100%', height: '200px', backgroundColor: '#ddd' }} />
+              <div style={{ width: '100%', height: '180px', backgroundColor: '#ddd', borderRadius: '12px 12px 0 0' }} />
             )}
 
-            <div style={{ padding: '1rem' }}>
+            <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '250px' }}>
               <h2 style={headingStyle}>
                 {c.fields?.["Campagnenaam"] || 'Naamloos'}
               </h2>
-              <p style={{ marginBottom: '1rem', color: '#555' }}>
-                <strong>Opgehaald:</strong> €{c.fields?.["Opgehaald bedrag"] || 0}
-              </p>
-              <p style={{ marginBottom: '1rem', color: '#555' }}>
-                <strong>Doelbedrag:</strong> €{c.fields?.["Doelbedrag"] || 0}
-              </p>
-              
+              <div style={{ color: '#555', marginBottom: '1rem', fontSize: '1.1rem' }}>
+                <p><strong>Opgehaald:</strong> €{c.fields?.["Opgehaald bedrag"] || 0}</p>
+                <p><strong>Doelbedrag:</strong> €{c.fields?.["Doelbedrag"] || 0}</p>
+              </div>
               {/* Progress bar */}
               <div style={{ marginBottom: '1rem' }}>
                 <div style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>
                   Behaald: {((parseFloat(c.fields?.["Opgehaald bedrag"]) / parseFloat(c.fields?.["Doelbedrag"])) * 100).toFixed(2)}%
                 </div>
-                <div style={{ height: '10px', width: '100%', backgroundColor: '#ddd' }}>
+                <div style={{ height: '8px', width: '100%', backgroundColor: '#ddd' }}>
                   <div style={{
                     height: '100%',
                     width: `${(parseFloat(c.fields?.["Opgehaald bedrag"]) / parseFloat(c.fields?.["Doelbedrag"])) * 100}%`,
@@ -113,9 +110,7 @@ export default function Home() {
                   }} />
                 </div>
               </div>
-            </div>
 
-            <div style={{ padding: '1rem' }}>
               <a 
                 href={c.fields?.["Campagnelink"] || '#'} 
                 target="_blank" 
@@ -161,14 +156,15 @@ const cardStyle = {
   backgroundColor: '#ffffff',
   display: 'flex',
   flexDirection: 'column',
-  boxShadow: '0 4px 10px rgba(0, 0, 0, 0.05)',
+  boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
   cursor: 'pointer',
   transition: 'transform 0.2s ease',
+  overflow: 'hidden', // Ensures content is clipped within the card
 }
 
 const headingStyle = {
-  fontSize: '1.4rem',
-  marginBottom: '1rem',
+  fontSize: '1.3rem',
+  marginBottom: '0.5rem',
   color: '#333',
   fontWeight: 'bold',
 }
