@@ -53,9 +53,24 @@ export default function Home() {
 
   return (
     <div style={{ padding: '2rem', backgroundColor: '#f7f9fc', minHeight: '100vh' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '1rem', fontSize: '2rem', fontFamily: 'Arial, sans-serif' }}>
-        Help onschuldige burgers in Gaza
+      {/* Gaza Campaigns Hero */} 
+    <div style={{
+      backgroundColor: '#b2c2a2',
+      padding: '3rem 1rem',
+      borderRadius: '16px',
+      textAlign: 'center',
+      marginBottom: '2rem',
+      color: '#ffffff'
+    }}>
+      <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', fontFamily: 'Arial, sans-serif' }}>
+        Gaza Campaigns
       </h1>
+      <p style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>
+        Help de onschuldige burgers in Gaza door te doneren aan gecontroleerde crowdfundingacties. 
+        Samen kunnen we een verschil maken.
+      </p>
+    </div>
+
 
       {/* Introblok */}
       <div style={{
