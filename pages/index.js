@@ -82,7 +82,8 @@ export default function Home() {
             onClick={() => handleFilterChange('bijna_compleet')}
             style={{
               backgroundColor: selectedFilter === 'bijna_compleet' ? '#b2c2a2' : '#ccc',
-              color: 'white', padding: '0.5rem 1rem', borderRadius: '5px', border: 'none'
+              color: 'white', padding: '0.5rem 1rem', borderRadius: '5px', border: 'none',
+              transition: 'background-color 0.3s ease'
             }}
           >
             Bijna compleet
@@ -91,7 +92,8 @@ export default function Home() {
             onClick={() => handleFilterChange('nieuw')}
             style={{
               backgroundColor: selectedFilter === 'nieuw' ? '#b2c2a2' : '#ccc',
-              color: 'white', padding: '0.5rem 1rem', borderRadius: '5px', border: 'none'
+              color: 'white', padding: '0.5rem 1rem', borderRadius: '5px', border: 'none',
+              transition: 'background-color 0.3s ease'
             }}
           >
             Nieuwe campagnes
@@ -100,7 +102,8 @@ export default function Home() {
             onClick={() => handleFilterChange('lang_niet_doneren')}
             style={{
               backgroundColor: selectedFilter === 'lang_niet_doneren' ? '#b2c2a2' : '#ccc',
-              color: 'white', padding: '0.5rem 1rem', borderRadius: '5px', border: 'none'
+              color: 'white', padding: '0.5rem 1rem', borderRadius: '5px', border: 'none',
+              transition: 'background-color 0.3s ease'
             }}
           >
             Lang niet gedoneerd
@@ -111,7 +114,8 @@ export default function Home() {
             onClick={handleResetFilters}
             style={{
               backgroundColor: '#ff6f61',
-              color: 'white', padding: '0.5rem 1rem', borderRadius: '5px', border: 'none'
+              color: 'white', padding: '0.5rem 1rem', borderRadius: '5px', border: 'none',
+              transition: 'background-color 0.3s ease'
             }}
           >
             Reset filters
@@ -163,7 +167,7 @@ export default function Home() {
                   {c.fields?.["Campagnenaam"] || 'Naamloos'}
                 </h2>
                 <p style={{ marginBottom: '1rem', color: '#666' }}>
-                  {`€${opgehaald} van €${doel}`}
+                  {`€${opgehaald.toLocaleString()} van €${doel.toLocaleString()}`}
                 </p>
 
                 {/* Progress bar + percentage */}
