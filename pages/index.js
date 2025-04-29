@@ -60,21 +60,37 @@ export default function Home() {
 
       {/* Introblok */}
       <div style={{
-        backgroundColor: '#b2c2a2',
-        padding: '1.5rem',
-        borderRadius: '10px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem 1rem',
+        background: 'linear-gradient(135deg, #b2c2a2, #9bb491)',
+        borderRadius: '16px',
         marginBottom: '2rem',
-        textAlign: 'center',
-        color: '#333',
-        fontSize: '1.1rem'
+        color: '#ffffff',
+        textAlign: 'center'
       }}>
-        <p style={{ marginBottom: '1rem' }}>
-          Wij sporen inzamelingsacties op en presenteren ze gecentraliseerd om zoveel mogelijk onschuldige burgers in Gaza te kunnen helpen.
+        <h1 style={{
+          fontSize: '2rem',
+          fontWeight: 'bold',
+          marginBottom: '0.5rem',
+          fontFamily: 'Arial, sans-serif'
+        }}>
+          Gaza Campaigns
+        </h1>
+        <p style={{
+          fontSize: '1rem',
+          maxWidth: '600px',
+          margin: '0 auto'
+        }}>
+          Doneer rechtstreeks aan geselecteerde campagnes voor Gaza. Samen maken we impact.
         </p>
         <p style={{ marginBottom: '0.5rem' }}>
           Totaal opgehaald: <strong>€{totaalOpgehaald.toLocaleString()}</strong>
         </p>
       </div>
+
 
       {/* Filters */}
       <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
