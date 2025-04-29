@@ -80,7 +80,7 @@ export default function Home() {
           maxWidth: '600px',
           margin: '0 auto'
         }}>
-          Doneer rechtstreeks aan geselecteerde campagnes voor Gaza. Samen maken we impact.
+          Doneer rechtstreeks aan campagnes voor Gaza. Samen maken we impact.
         </p>
         <p style={{ marginBottom: '0.5rem' }}>
           Totaal opgehaald: <strong>€{totaalOpgehaald.toLocaleString()}</strong>
