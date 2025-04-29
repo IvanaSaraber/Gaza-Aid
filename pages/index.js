@@ -52,7 +52,9 @@ export default function Home() {
   if (error) return <p>❌ Fout: {error}</p>
 
   return (
-      {/* Introblok */}
+    <div style={{ padding: '2rem', backgroundColor: '#f7f9fc', minHeight: '100vh' }}>
+
+    {/* Introblok */}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
