@@ -10,9 +10,7 @@ export default function Home() {
     async function fetchCampaigns() {
       try {
         const res = await fetch('https://gaza-aid-1byz.vercel.app/api/campaigns')
-        if (!res.ok) {
-          throw new Error(`API error: ${res.status}`)
-        }
+        if (!res.ok) throw new Error(`API error: ${res.status}`)
         const data = await res.json()
         setCampaigns(data.records || [])
       } catch (err) {
@@ -25,13 +23,8 @@ export default function Home() {
     fetchCampaigns()
   }, [])
 
-  const handleFilterChange = (filter) => {
-    setSelectedFilter(filter)
-  }
-
-  const handleResetFilters = () => {
-    setSelectedFilter('')
-  }
+  const handleFilterChange = (filter) => setSelectedFilter(filter)
+  const handleResetFilters = () => setSelectedFilter('')
 
   const filteredCampaigns = campaigns.filter((campaign) => {
     if (selectedFilter === 'bijna_compleet') {
@@ -48,18 +41,17 @@ export default function Home() {
 
   const totaalOpgehaald = campaigns.reduce((sum, c) => sum + (c.fields['Opgehaald bedrag'] || 0), 0)
 
-  if (loading) return <p>⏳ Laden...</p>
-  if (error) return <p>❌ Fout: {error}</p>
+  if (loading) return <p style={{ textAlign: 'center' }}>⏳ Laden...</p>
+  if (error) return <p style={{ color: 'red', textAlign: 'center' }}>❌ Fout: {error}</p>
 
   return (
     <div style={{ padding: '2rem', backgroundColor: '#f7f9fc', minHeight: '100vh' }}>
 
-    {/* Introblok */}
+      {/* Introblok */}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
         padding: '2rem 1rem',
         background: 'linear-gradient(135deg, #b2c2a2, #9bb491)',
         borderRadius: '16px',
@@ -70,65 +62,51 @@ export default function Home() {
         <h1 style={{
           fontSize: '2rem',
           fontWeight: 'bold',
-          marginBottom: '0.5rem',
-          fontFamily: 'Arial, sans-serif'
+          marginBottom: '0.5rem'
         }}>
           Gaza Campaigns
         </h1>
-        <p style={{
-          fontSize: '1rem',
-          maxWidth: '600px',
-          margin: '0 auto'
-        }}>
+        <p style={{ fontSize: '1rem', maxWidth: '600px', margin: '0 auto' }}>
           Doneer rechtstreeks aan campagnes voor Gaza. Samen maken we impact.
         </p>
-        <p style={{ marginBottom: '0.5rem' }}>
+        <p style={{ marginTop: '1rem' }}>
           Totaal opgehaald: <strong>€{totaalOpgehaald.toLocaleString()}</strong>
         </p>
       </div>
 
-
       {/* Filters */}
-      <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-          <button
-            onClick={() => handleFilterChange('bijna_compleet')}
-            style={{
-              backgroundColor: selectedFilter === 'bijna_compleet' ? '#b2c2a2' : '#ccc',
-              color: 'white', padding: '0.5rem 1rem', borderRadius: '5px', border: 'none',
-              transition: 'background-color 0.3s ease'
-            }}
-          >
-            Bijna compleet
-          </button>
-          <button
-            onClick={() => handleFilterChange('nieuw')}
-            style={{
-              backgroundColor: selectedFilter === 'nieuw' ? '#b2c2a2' : '#ccc',
-              color: 'white', padding: '0.5rem 1rem', borderRadius: '5px', border: 'none',
-              transition: 'background-color 0.3s ease'
-            }}
-          >
-            Nieuwe campagnes
-          </button>
-          <button
-            onClick={() => handleFilterChange('lang_niet_doneren')}
-            style={{
-              backgroundColor: selectedFilter === 'lang_niet_doneren' ? '#b2c2a2' : '#ccc',
-              color: 'white', padding: '0.5rem 1rem', borderRadius: '5px', border: 'none',
-              transition: 'background-color 0.3s ease'
-            }}
-          >
-            Lang niet gedoneerd
-          </button>
+          {[
+            { key: 'bijna_compleet', label: 'Bijna compleet' },
+            { key: 'nieuw', label: 'Nieuwe campagnes' },
+            { key: 'lang_niet_doneren', label: 'Lang niet gedoneerd' }
+          ].map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => handleFilterChange(key)}
+              style={{
+                backgroundColor: selectedFilter === key ? '#b2c2a2' : '#ccc',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                borderRadius: '5px',
+                border: 'none',
+                transition: '0.3s ease'
+              }}
+            >
+              {label}
+            </button>
+          ))}
         </div>
         <div style={{ marginTop: '1rem' }}>
           <button
             onClick={handleResetFilters}
             style={{
               backgroundColor: '#ff6f61',
-              color: 'white', padding: '0.5rem 1rem', borderRadius: '5px', border: 'none',
-              transition: 'background-color 0.3s ease'
+              color: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '5px',
+              border: 'none'
             }}
           >
             Reset filters
@@ -140,7 +118,7 @@ export default function Home() {
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: '2rem',
+        gap: '2rem'
       }}>
         {filteredCampaigns.map((c) => {
           const opgehaald = c.fields?.["Opgehaald bedrag"] || 0
@@ -148,18 +126,19 @@ export default function Home() {
           const percentage = Math.min(Math.round((opgehaald / doel) * 100), 100)
 
           return (
-            <div key={c.id} style={{
-              border: '1px solid #e0e0e0',
-              borderRadius: '16px',
-              overflow: 'hidden',
-              backgroundColor: '#ffffff',
-              display: 'flex',
-              flexDirection: 'column',
-              boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
-              transition: 'transform 0.2s ease',
-              cursor: 'pointer',
-              marginBottom: '1rem'
-            }}
+            <div
+              key={c.id}
+              style={{
+                border: '1px solid #e0e0e0',
+                borderRadius: '16px',
+                overflow: 'hidden',
+                backgroundColor: '#ffffff',
+                display: 'flex',
+                flexDirection: 'column',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
+                transition: 'transform 0.2s ease',
+                cursor: 'pointer'
+              }}
               onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
               onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
@@ -176,14 +155,14 @@ export default function Home() {
 
               {/* Inhoud */}
               <div style={{ padding: '1rem', flexGrow: 1 }}>
-                <h2 style={{ fontSize: '1.4rem', marginBottom: '1rem', color: '#333' }}>
+                <h2 style={{ fontSize: '1.2rem', marginBottom: '0.75rem', color: '#333' }}>
                   {c.fields?.["Campagnenaam"] || 'Naamloos'}
                 </h2>
                 <p style={{ marginBottom: '1rem', color: '#666' }}>
                   {`€${opgehaald.toLocaleString()} van €${doel.toLocaleString()}`}
                 </p>
 
-                {/* Progress bar + percentage */}
+                {/* Progress bar */}
                 <div style={{ width: '100%', backgroundColor: '#eee', height: '8px', borderRadius: '4px', position: 'relative' }}>
                   <div
                     style={{
@@ -197,7 +176,7 @@ export default function Home() {
                     position: 'absolute',
                     bottom: '-20px',
                     right: '0',
-                    fontSize: '0.9rem',
+                    fontSize: '0.85rem',
                     color: '#333'
                   }}>
                     {percentage}%
@@ -219,8 +198,7 @@ export default function Home() {
                     padding: '0.75rem',
                     borderRadius: '8px',
                     fontWeight: 'bold',
-                    textDecoration: 'none',
-                    transition: 'background-color 0.2s ease'
+                    textDecoration: 'none'
                   }}
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#99aa88'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#b2c2a2'}
@@ -234,7 +212,7 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.9rem', color: '#777' }}>
+      <footer style={{ textAlign: 'center', marginTop: '3rem', fontSize: '0.9rem', color: '#777' }}>
         <p>Een initiatief van United Muslim Mothers (UMM)</p>
       </footer>
     </div>
