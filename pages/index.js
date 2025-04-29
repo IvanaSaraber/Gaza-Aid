@@ -52,12 +52,6 @@ export default function Home() {
   if (error) return <p>❌ Fout: {error}</p>
 
   return (
-    <div style={{ padding: '2rem', backgroundColor: '#f7f9fc', minHeight: '100vh' }}>
-    <h1 style={{ textAlign: 'center', marginBottom: '1rem', fontSize: '2rem', fontFamily: 'Arial, sans-serif' }}>
-      Help onschuldige burgers in Gaza
-    </h1>
-
-
       {/* Introblok */}
       <div style={{
         display: 'flex',
