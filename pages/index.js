@@ -11,7 +11,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchCampaigns() {
       try {
-        const res = await fetch('https://gaza-aid-1byz.vercel.app/api/campaigns')
+        const res = await fetch('/api/campaigns')
         if (!res.ok) throw new Error(`API error: ${res.status}`)
         const data = await res.json()
         setCampaigns(data.records || [])
@@ -68,84 +68,113 @@ export default function Home() {
     <div style={{ padding: '2rem', backgroundColor: '#f7f9fc', minHeight: '100vh' }}>
       {/* Hero header */}
       <div style={{
-        background: 'linear-gradient(to right, #b2c2a2, #9bb491)',
-        color: '#fff',
-        padding: '3rem 1rem',
+        backgroundColor: '#eaf0eb',
+        color: '#2e3d2f',
+        padding: '2.5rem 1rem 2rem',
         textAlign: 'center',
         borderRadius: '1.5rem',
         marginBottom: '2rem',
-        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)'
+        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.05)'
       }}>
-        <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+        <h1 style={{ fontSize: '2.2rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>
           Steun Gaza rechtstreeks
         </h1>
-        <p style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>
+        <p style={{ fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
           Een overzicht van crowdfundingcampagnes voor Gaza – veilig, vertrouwd en direct.
         </p>
-        <p style={{ marginTop: '1.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
+        <p style={{ marginTop: '1.2rem', fontSize: '1.05rem', fontWeight: 'bold', color: '#4a5b4c' }}>
           Totaal opgehaald: €{totaalOpgehaald.toLocaleString()}
         </p>
       </div>
 
-      {/* Zoekfunctie met knoppen */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-        <input
-          type="text"
-          placeholder="Zoek op campagnenaam..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') setCommittedSearchTerm(searchTerm)
-          }}
-          style={{
-            padding: '0.5rem',
-            borderRadius: '8px',
-            border: '1px solid #ccc',
-            width: '100%',
-            maxWidth: '400px'
-          }}
-        />
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <button
-            onClick={() => setCommittedSearchTerm(searchTerm)}
+      {/* Zoek & filterblok (warm stijlvol) */}
+      <div style={{
+        backgroundColor: '#f0f4f1',
+        padding: '2rem',
+        borderRadius: '1.5rem',
+        marginBottom: '2rem',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+        maxWidth: '800px',
+        marginLeft: 'auto',
+        marginRight: 'auto'
+      }}>
+        <h2 style={{
+          fontSize: '1.5rem',
+          marginBottom: '1rem',
+          textAlign: 'center',
+          color: '#333',
+          fontWeight: '600'
+        }}>
+          Zoek en filter campagnes
+        </h2>
+
+        {/* Zoekbalk + knoppen */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '0.5rem',
+          marginBottom: '1.5rem'
+        }}>
+          <input
+            type="text"
+            placeholder="Zoek op campagnenaam..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') setCommittedSearchTerm(searchTerm)
+            }}
             style={{
-              backgroundColor: '#b2c2a2',
-              color: 'white',
-              padding: '0.5rem 1rem',
-              border: 'none',
-              borderRadius: '8px',
-              fontWeight: 'bold'
+              padding: '0.75rem 1rem',
+              borderRadius: '10px',
+              border: '1px solid #ccc',
+              width: '100%',
+              maxWidth: '400px',
+              fontSize: '1rem'
             }}
-          >
-            Zoek
-          </button>
-          <button
-            onClick={() => {
-              setSearchTerm('')
-              setCommittedSearchTerm('')
-            }}
-            style={{
-              backgroundColor: '#ff6f61',
-              color: 'white',
-              padding: '0.5rem 1rem',
-              border: 'none',
-              borderRadius: '8px'
-            }}
-          >
-            Reset zoekopdracht
-          </button>
+          />
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => setCommittedSearchTerm(searchTerm)}
+              style={{
+                backgroundColor: '#b2c2a2',
+                color: 'white',
+                padding: '0.5rem 1.2rem',
+                border: 'none',
+                borderRadius: '999px',
+                fontWeight: 'bold',
+                cursor: 'pointer'
+              }}
+            >
+              Zoek
+            </button>
+            <button
+              onClick={() => {
+                setSearchTerm('')
+                setCommittedSearchTerm('')
+              }}
+              style={{
+                backgroundColor: '#ff9e80',
+                color: 'white',
+                padding: '0.5rem 1.2rem',
+                border: 'none',
+                borderRadius: '999px',
+                cursor: 'pointer'
+              }}
+            >
+              Reset zoekopdracht
+            </button>
+          </div>
         </div>
-      </div>
 
-
-      {/* Aantal resultaten */}
-      <p style={{ textAlign: 'center', marginBottom: '1rem', color: '#555' }}>
-        {filteredCampaigns.length} campagne{filteredCampaigns.length === 1 ? '' : 's'} gevonden
-      </p>
-
-      {/* Filters */}
-      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+        {/* Filterknoppen */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          gap: '0.5rem',
+          marginBottom: '1rem'
+        }}>
           {[
             { key: 'bijna_compleet', label: 'Bijna compleet' },
             { key: 'nieuw', label: 'Nieuwe campagnes' },
@@ -155,32 +184,42 @@ export default function Home() {
               key={key}
               onClick={() => handleFilterChange(key)}
               style={{
-                backgroundColor: selectedFilter === key ? '#b2c2a2' : '#ccc',
-                color: 'white',
+                backgroundColor: selectedFilter === key ? '#b2c2a2' : '#e0e0e0',
+                color: selectedFilter === key ? 'white' : '#333',
                 padding: '0.5rem 1rem',
-                borderRadius: '5px',
+                borderRadius: '999px',
                 border: 'none',
-                transition: '0.3s ease'
+                cursor: 'pointer',
+                fontWeight: '500'
               }}
             >
               {label}
             </button>
           ))}
         </div>
-        <div style={{ marginTop: '1rem' }}>
+
+        {/* Reset filters */}
+        <div style={{ textAlign: 'center' }}>
           <button
             onClick={handleResetFilters}
             style={{
               backgroundColor: '#ff6f61',
               color: 'white',
-              padding: '0.5rem 1rem',
-              borderRadius: '5px',
-              border: 'none'
+              padding: '0.4rem 1.2rem',
+              borderRadius: '999px',
+              border: 'none',
+              fontSize: '0.95rem',
+              cursor: 'pointer'
             }}
           >
             Reset filters
           </button>
         </div>
+
+        {/* Resultaatteller */}
+        <p style={{ textAlign: 'center', marginTop: '1.5rem', color: '#555' }}>
+          {filteredCampaigns.length} campagne{filteredCampaigns.length === 1 ? '' : 's'} gevonden
+        </p>
       </div>
 
       {/* Campagnes */}
@@ -274,6 +313,7 @@ export default function Home() {
         })}
       </div>
 
+      {/* Footer */}
       <footer style={{ textAlign: 'center', marginTop: '3rem', fontSize: '0.9rem', color: '#777' }}>
         <p>Een initiatief van United Muslim Mothers (UMM)</p>
       </footer>
