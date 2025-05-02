@@ -6,6 +6,8 @@ export default function Home() {
   const [error, setError] = useState(null)
   const [selectedFilter, setSelectedFilter] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
+  const [committedSearchTerm, setCommittedSearchTerm] = useState('')
+
 
   useEffect(() => {
     async function fetchCampaigns() {
@@ -93,6 +95,9 @@ export default function Home() {
           placeholder="Zoek op campagnenaam..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') setCommittedSearchTerm(searchTerm)
+          }}
           style={{
             padding: '0.5rem',
             borderRadius: '8px',
