@@ -8,7 +8,6 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('')
   const [committedSearchTerm, setCommittedSearchTerm] = useState('')
 
-
   useEffect(() => {
     async function fetchCampaigns() {
       try {
@@ -42,7 +41,7 @@ export default function Home() {
 
   const filteredCampaigns = campaigns.filter((campaign) => {
     const name = campaign.fields?.["Campagnenaam"]?.toLowerCase() || ""
-    const matchSearch = name.includes(searchTerm.toLowerCase())
+    const matchSearch = name.includes(committedSearchTerm.toLowerCase())
     if (!matchSearch) return false
 
     if (selectedFilter === 'bijna_compleet') {
@@ -107,6 +106,11 @@ export default function Home() {
           }}
         />
       </div>
+
+      {/* Aantal resultaten */}
+      <p style={{ textAlign: 'center', marginBottom: '1rem', color: '#555' }}>
+        {filteredCampaigns.length} campagne{filteredCampaigns.length === 1 ? '' : 's'} gevonden
+      </p>
 
       {/* Filters */}
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
