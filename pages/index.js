@@ -36,8 +36,9 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const handleFilterChange = (filter) => setSelectedFilter(filter)
-  const handleResetFilters = () => setSelectedFilter('')
+  const handleFilterChange = (filter) => {
+    setSelectedFilter((prev) => (prev === filter ? '' : filter))
+  }
 
   const filteredCampaigns = campaigns.filter((campaign) => {
     const name = campaign.fields?.["Campagnenaam"]?.toLowerCase() || ""
@@ -87,7 +88,7 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Zoek & filterblok (warm stijlvol) */}
+      {/* Zoek & filterblok */}
       <div style={{
         backgroundColor: '#f0f4f1',
         padding: '2rem',
@@ -162,7 +163,7 @@ export default function Home() {
                 cursor: 'pointer'
               }}
             >
-              Reset zoekopdracht
+              Toon alles
             </button>
           </div>
         </div>
@@ -196,24 +197,6 @@ export default function Home() {
               {label}
             </button>
           ))}
-        </div>
-
-        {/* Reset filters */}
-        <div style={{ textAlign: 'center' }}>
-          <button
-            onClick={handleResetFilters}
-            style={{
-              backgroundColor: '#ff6f61',
-              color: 'white',
-              padding: '0.4rem 1.2rem',
-              borderRadius: '999px',
-              border: 'none',
-              fontSize: '0.95rem',
-              cursor: 'pointer'
-            }}
-          >
-            Reset filters
-          </button>
         </div>
 
         {/* Resultaatteller */}
@@ -252,11 +235,17 @@ export default function Home() {
               onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
               {afbeelding ? (
-                <img
-                  src={afbeelding}
-                  alt={c.fields?.["Campagnenaam"] || 'Campagne afbeelding'}
-                  style={{ width: '100%', height: '200px', objectFit: 'cover' }}
-                />
+                <a
+                  href={c.fields?.["Campagnelink"] || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={afbeelding}
+                    alt={c.fields?.["Campagnenaam"] || 'Campagne afbeelding'}
+                    style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                  />
+                </a>
               ) : (
                 <div style={{ width: '100%', height: '200px', backgroundColor: '#eee' }} />
               )}
