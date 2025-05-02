@@ -87,8 +87,8 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Zoekfunctie */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+      {/* Zoekfunctie met knoppen */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
         <input
           type="text"
           placeholder="Zoek op campagnenaam..."
@@ -105,7 +105,38 @@ export default function Home() {
             maxWidth: '400px'
           }}
         />
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => setCommittedSearchTerm(searchTerm)}
+            style={{
+              backgroundColor: '#b2c2a2',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: 'bold'
+            }}
+          >
+            Zoek
+          </button>
+          <button
+            onClick={() => {
+              setSearchTerm('')
+              setCommittedSearchTerm('')
+            }}
+            style={{
+              backgroundColor: '#ff6f61',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              border: 'none',
+              borderRadius: '8px'
+            }}
+          >
+            Reset zoekopdracht
+          </button>
+        </div>
       </div>
+
 
       {/* Aantal resultaten */}
       <p style={{ textAlign: 'center', marginBottom: '1rem', color: '#555' }}>
