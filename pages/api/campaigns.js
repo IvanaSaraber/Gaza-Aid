@@ -1,38 +1,47 @@
 // pages/api/campaigns.js
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
 
   if (req.method !== 'GET') {
-    return res.status(405).end(); // Method Not Allowed
+    return res.status(405).end() // Method Not Allowed
   }
+
   const apiKey = process.env.AIRTABLE_API_KEY
   const baseId = process.env.AIRTABLE_BASE_ID
-  const tableName = 'MainTable' // pas aan als je tabel anders heet
+  const tableName = 'MainTable'
 
   if (!apiKey || !baseId) {
     return res.status(500).json({ error: 'Missing Airtable config in environment variables.' })
   }
 
-  const url = `https://api.airtable.com/v0/${baseId}/${tableName}`
+  const baseUrl = `https://api.airtable.com/v0/${baseId}/${tableName}`
+  let allRecords = []
+  let offset = null
 
   try {
-    const airtableRes = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
+    do {
+      const url = offset ? `${baseUrl}?offset=${offset}` : baseUrl
+      const airtableRes = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      })
+
+      const data = await airtableRes.json()
+
+      if (!airtableRes.ok) {
+        return res.status(airtableRes.status).json({ error: data })
       }
-    })
 
-    const data = await airtableRes.json()
+      allRecords = allRecords.concat(data.records)
+      offset = data.offset
+    } while (offset)
 
-    if (!airtableRes.ok) {
-      return res.status(airtableRes.status).json({ error: data })
-    }
-
-    return res.status(200).json(data)
+    return res.status(200).json({ records: allRecords })
   } catch (error) {
     return res.status(500).json({ error: 'Server error', details: error.toString() })
   }
