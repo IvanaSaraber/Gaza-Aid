@@ -46,29 +46,27 @@ export default function Home() {
 
   return (
     <div style={{ padding: '2rem', backgroundColor: '#f7f9fc', minHeight: '100vh' }}>
-
-      {/* Introblok */}
+      {/* Hero header */}
       <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '2rem 1rem',
-        background: 'linear-gradient(135deg, #b2c2a2, #9bb491)',
-        borderRadius: '16px',
+        background: 'linear-gradient(to right, #b2c2a2, #9bb491)',
+        color: '#fff',
+        padding: '3rem 1rem',
+        textAlign: 'center',
+        borderRadius: '1.5rem',
         marginBottom: '2rem',
-        color: '#ffffff',
-        textAlign: 'center'
+        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)'
       }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-          Gaza Campaigns
+        <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+          Steun Gaza rechtstreeks
         </h1>
-        <p style={{ fontSize: '1rem', maxWidth: '600px', margin: '0 auto' }}>
-          Doneer rechtstreeks aan campagnes voor Gaza. Samen maken we impact.
+        <p style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>
+          Een overzicht van crowdfundingcampagnes voor Gaza – veilig, vertrouwd en direct.
         </p>
-        <p style={{ marginTop: '1rem' }}>
-          Totaal opgehaald: <strong>€{totaalOpgehaald.toLocaleString()}</strong>
+        <p style={{ marginTop: '1.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
+          Totaal opgehaald: €{totaalOpgehaald.toLocaleString()}
         </p>
       </div>
+
 
       {/* Filters */}
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
