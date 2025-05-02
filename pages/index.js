@@ -5,6 +5,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [selectedFilter, setSelectedFilter] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     async function fetchCampaigns() {
@@ -23,12 +24,30 @@ export default function Home() {
     fetchCampaigns()
   }, [])
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const btn = document.getElementById('topBtn')
+      if (btn) {
+        btn.style.display = window.scrollY > 300 ? 'block' : 'none'
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   const handleFilterChange = (filter) => setSelectedFilter(filter)
   const handleResetFilters = () => setSelectedFilter('')
 
   const filteredCampaigns = campaigns.filter((campaign) => {
+    const name = campaign.fields?.["Campagnenaam"]?.toLowerCase() || ""
+    const matchSearch = name.includes(searchTerm.toLowerCase())
+    if (!matchSearch) return false
+
     if (selectedFilter === 'bijna_compleet') {
-      return campaign.fields['Opgehaald bedrag'] >= campaign.fields['Doelbedrag'] * 0.9
+      const opgehaald = campaign.fields['Opgehaald bedrag']
+      const doel = campaign.fields['Doelbedrag']
+      const percentage = (opgehaald / doel) * 100
+      return percentage >= 85 && percentage < 100
     }
     if (selectedFilter === 'nieuw') {
       return new Date(campaign.fields['Startdatum']) >= new Date(new Date().setDate(new Date().getDate() - 7))
@@ -67,6 +86,22 @@ export default function Home() {
         </p>
       </div>
 
+      {/* Zoekfunctie */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+        <input
+          type="text"
+          placeholder="Zoek op campagnenaam..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            padding: '0.5rem',
+            borderRadius: '8px',
+            border: '1px solid #ccc',
+            width: '100%',
+            maxWidth: '400px'
+          }}
+        />
+      </div>
 
       {/* Filters */}
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
@@ -137,7 +172,6 @@ export default function Home() {
               onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
               onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
-              {/* Afbeelding */}
               {afbeelding ? (
                 <img
                   src={afbeelding}
@@ -147,8 +181,6 @@ export default function Home() {
               ) : (
                 <div style={{ width: '100%', height: '200px', backgroundColor: '#eee' }} />
               )}
-
-              {/* Inhoud */}
               <div style={{ padding: '1rem', flexGrow: 1 }}>
                 <h2 style={{ fontSize: '1.2rem', marginBottom: '0.75rem', color: '#333' }}>
                   {c.fields?.["Campagnenaam"] || 'Naamloos'}
@@ -156,8 +188,6 @@ export default function Home() {
                 <p style={{ marginBottom: '1rem', color: '#666' }}>
                   €{opgehaald.toLocaleString()} van €{doel.toLocaleString()}
                 </p>
-
-                {/* Progress bar */}
                 <div style={{ width: '100%', backgroundColor: '#eee', height: '8px', borderRadius: '4px', position: 'relative' }}>
                   <div
                     style={{
@@ -178,8 +208,6 @@ export default function Home() {
                   </span>
                 </div>
               </div>
-
-              {/* Knop */}
               <div style={{ padding: '1rem' }}>
                 <a
                   href={c.fields?.["Campagnelink"] || '#'}
@@ -206,10 +234,31 @@ export default function Home() {
         })}
       </div>
 
-      {/* Footer */}
       <footer style={{ textAlign: 'center', marginTop: '3rem', fontSize: '0.9rem', color: '#777' }}>
         <p>Een initiatief van United Muslim Mothers (UMM)</p>
       </footer>
+
+      {/* Back to top button */}
+      <button
+        id="topBtn"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        style={{
+          display: 'none',
+          position: 'fixed',
+          bottom: '30px',
+          right: '30px',
+          backgroundColor: '#ff6f61',
+          color: 'white',
+          border: 'none',
+          padding: '0.75rem 1rem',
+          borderRadius: '50%',
+          fontSize: '1.5rem',
+          cursor: 'pointer',
+          boxShadow: '0 4px 10px rgba(0,0,0,0.3)'
+        }}
+      >
+        ↑
+      </button>
     </div>
   )
 }
