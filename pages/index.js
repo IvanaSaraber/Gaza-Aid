@@ -10,7 +10,7 @@ export default function Home() {
     async function fetchCampaigns() {
       try {
         const res = await fetch('https://gaza-aid-1byz.vercel.app/api/campaigns')
-        if (!res.ok) throw new Error(API error: ${res.status})
+        if (!res.ok) throw new Error(`API error: ${res.status}`)
         const data = await res.json()
         setCampaigns(data.records || [])
       } catch (err) {
@@ -59,11 +59,7 @@ export default function Home() {
         color: '#ffffff',
         textAlign: 'center'
       }}>
-        <h1 style={{
-          fontSize: '2rem',
-          fontWeight: 'bold',
-          marginBottom: '0.5rem'
-        }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>
           Gaza Campaigns
         </h1>
         <p style={{ fontSize: '1rem', maxWidth: '600px', margin: '0 auto' }}>
@@ -124,6 +120,7 @@ export default function Home() {
           const opgehaald = c.fields?.["Opgehaald bedrag"] || 0
           const doel = c.fields?.["Doelbedrag"] || 1
           const percentage = Math.min(Math.round((opgehaald / doel) * 100), 100)
+          const afbeelding = Array.isArray(c.fields?.Afbeelding) ? c.fields.Afbeelding[0]?.url : c.fields?.Afbeelding
 
           return (
             <div
@@ -143,9 +140,9 @@ export default function Home() {
               onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
               {/* Afbeelding */}
-              {c.fields?.Afbeelding ? (
+              {afbeelding ? (
                 <img
-                  src={Array.isArray(c.fields.Afbeelding) ? c.fields.Afbeelding[0]?.url : c.fields.Afbeelding}
+                  src={afbeelding}
                   alt={c.fields?.["Campagnenaam"] || 'Campagne afbeelding'}
                   style={{ width: '100%', height: '200px', objectFit: 'cover' }}
                 />
@@ -159,14 +156,14 @@ export default function Home() {
                   {c.fields?.["Campagnenaam"] || 'Naamloos'}
                 </h2>
                 <p style={{ marginBottom: '1rem', color: '#666' }}>
-                  {€${opgehaald.toLocaleString()} van €${doel.toLocaleString()}}
+                  €{opgehaald.toLocaleString()} van €{doel.toLocaleString()}
                 </p>
 
                 {/* Progress bar */}
                 <div style={{ width: '100%', backgroundColor: '#eee', height: '8px', borderRadius: '4px', position: 'relative' }}>
                   <div
                     style={{
-                      width: ${percentage}%,
+                      width: `${percentage}%`,
                       height: '100%',
                       backgroundColor: '#b2c2a2',
                       borderRadius: '4px'
