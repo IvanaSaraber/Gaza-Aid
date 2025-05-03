@@ -10,8 +10,11 @@ export default function Home() {
 
   useEffect(() => {
     async function fetchCampaigns() {
+      setLoading(true)
       try {
-        const res = await fetch('/api/campaigns')
+        const params = new URLSearchParams()
+        if (selectedFilter === 'weeskind') params.append('weeskind', 'true')
+        const res = await fetch(`/api/campaigns?${params.toString()}`)
         if (!res.ok) throw new Error(`API error: ${res.status}`)
         const data = await res.json()
         setCampaigns(data.records || [])
@@ -23,7 +26,7 @@ export default function Home() {
       }
     }
     fetchCampaigns()
-  }, [])
+  }, [selectedFilter])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,21 +54,12 @@ export default function Home() {
       const percentage = (opgehaald / doel) * 100
       return percentage >= 85 && percentage < 100
     }
-
     if (selectedFilter === 'nieuw') {
-      const start = campaign.fields['Startdatum']
-      if (!start) return false
-      return new Date(start) >= new Date(new Date().setDate(new Date().getDate() - 7))
+      return new Date(campaign.fields['Startdatum']) >= new Date(new Date().setDate(new Date().getDate() - 7))
     }
-
     if (selectedFilter === 'lang_niet_doneren') {
-      return campaign.fields['DagenGeenDonatie'] > 7
+      return campaign.fields['DagenGeenDonatie'] >= 7
     }
-
-    if (selectedFilter === 'weeskinderen') {
-      return campaign.fields['Weeskind'] === true
-    }
-
     return true
   })
 
@@ -162,7 +156,6 @@ export default function Home() {
               onClick={() => {
                 setSearchTerm('')
                 setCommittedSearchTerm('')
-                setSelectedFilter('')
               }}
               style={{
                 backgroundColor: '#ff9e80',
@@ -190,7 +183,7 @@ export default function Home() {
             { key: 'bijna_compleet', label: 'Bijna compleet' },
             { key: 'nieuw', label: 'Nieuwe campagnes' },
             { key: 'lang_niet_doneren', label: 'Lang niet gedoneerd' },
-            { key: 'weeskinderen', label: 'Weeskinderen' }
+            { key: 'weeskind', label: 'Weeskinderen' }
           ].map(({ key, label }) => (
             <button
               key={key}
