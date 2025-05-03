@@ -25,6 +25,7 @@ export default async function handler(req, res) {
   // Query-based filtering
   const filters = []
   if (req.query.weeskind === 'true') filters.push(`{Weeskind}=TRUE()`)
+  if (req.query.weeskind === 'false') filters.push(`{Weeskind}=FALSE()`)
   if (req.query.status) filters.push(`{Status}='${req.query.status}'`)
 
   const formulaParam = filters.length > 0 ? `filterByFormula=AND(${filters.join(',')})` : ''
