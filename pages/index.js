@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react'
 
 export default function Home() {
@@ -51,12 +52,21 @@ export default function Home() {
       const percentage = (opgehaald / doel) * 100
       return percentage >= 85 && percentage < 100
     }
+
     if (selectedFilter === 'nieuw') {
-      return new Date(campaign.fields['Startdatum']) >= new Date(new Date().setDate(new Date().getDate() - 7))
+      const start = campaign.fields['Startdatum']
+      if (!start) return false
+      return new Date(start) >= new Date(new Date().setDate(new Date().getDate() - 7))
     }
+
     if (selectedFilter === 'lang_niet_doneren') {
-      return campaign.fields['Dagen sinds laatste donatie'] >= 30
+      return campaign.fields['DagenGeenDonatie'] > 7
     }
+
+    if (selectedFilter === 'weeskinderen') {
+      return campaign.fields['Weeskind'] === true
+    }
+
     return true
   })
 
@@ -153,6 +163,7 @@ export default function Home() {
               onClick={() => {
                 setSearchTerm('')
                 setCommittedSearchTerm('')
+                setSelectedFilter('')
               }}
               style={{
                 backgroundColor: '#ff9e80',
@@ -179,7 +190,8 @@ export default function Home() {
           {[
             { key: 'bijna_compleet', label: 'Bijna compleet' },
             { key: 'nieuw', label: 'Nieuwe campagnes' },
-            { key: 'lang_niet_doneren', label: 'Lang niet gedoneerd' }
+            { key: 'lang_niet_doneren', label: 'Lang niet gedoneerd' },
+            { key: 'weeskinderen', label: 'Weeskinderen' }
           ].map(({ key, label }) => (
             <button
               key={key}
@@ -235,11 +247,7 @@ export default function Home() {
               onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
               {afbeelding ? (
-                <a
-                  href={c.fields?.["Campagnelink"] || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href={c.fields?.["Campagnelink"] || '#'} target="_blank" rel="noopener noreferrer">
                   <img
                     src={afbeelding}
                     alt={c.fields?.["Campagnenaam"] || 'Campagne afbeelding'}
@@ -291,8 +299,6 @@ export default function Home() {
                     fontWeight: 'bold',
                     textDecoration: 'none'
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#99aa88'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#b2c2a2'}
                 >
                   Bekijk campagne
                 </a>
