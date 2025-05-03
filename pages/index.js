@@ -60,6 +60,9 @@ export default function Home() {
     if (selectedFilter === 'lang_niet_doneren') {
       return campaign.fields['DagenGeenDonatie'] >= 7
     }
+    if (selectedFilter === 'weeskind') {
+      return campaign.fields['Weeskind'] === true
+    }
     return true
   })
 
