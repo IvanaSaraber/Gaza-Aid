@@ -193,7 +193,6 @@ export default function Home() {
         <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
           {[
             { key: 'bijna_compleet', label: 'Bijna compleet' },
-            { key: 'nieuw', label: 'Nieuwe campagnes' },
             { key: 'lang_niet_doneren', label: 'Lang niet gedoneerd' },
             { key: 'weeskind', label: 'Weeskinderen' }
           ].map(({ key, label }) => (
