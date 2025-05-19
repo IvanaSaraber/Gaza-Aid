@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import Image from 'next/image'
 
 export default function Home() {
   const [campaigns, setCampaigns] = useState([])
@@ -82,7 +83,6 @@ export default function Home() {
 
     const matches = selectedFilters.every((filter) => {
       if (filter === 'bijna_compleet') return percentage >= 85 && percentage < 100
-      if (filter === 'nieuw') return new Date(campaign.fields['Startdatum']) >= new Date(new Date().setDate(new Date().getDate() - 7))
       if (filter === 'lang_niet_doneren') return campaign.fields['DagenGeenDonatie'] >= 7
       if (filter === 'weeskind') return campaign.fields['Weeskind'] === true
       return true
@@ -119,7 +119,7 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Zoek & filters */}
+      {/* Filters & zoek */}
       <div style={{
         backgroundColor: '#f0f4f1',
         padding: '2rem',
@@ -215,16 +215,16 @@ export default function Home() {
           <button
             onClick={toggleCompleted}
             style={{
-              backgroundColor: showCompleted ? '#b2c2a2' : '#e0e0e0',
-              color: showCompleted ? 'white' : '#333',
+              backgroundColor: showCompleted ? '#4caf50' : 'transparent',
+              color: showCompleted ? 'white' : '#4caf50',
               padding: '0.5rem 1rem',
-              borderRadius: '999px',
-              border: 'none',
+              borderRadius: '8px',
+              border: '2px solid #4caf50',
               cursor: 'pointer',
-              fontWeight: '500'
+              fontWeight: '600'
             }}
           >
-            Voltooide campagnes
+            Toon voltooide campagnes
           </button>
         </div>
 
@@ -264,10 +264,12 @@ export default function Home() {
             >
               {afbeelding ? (
                 <a href={c.fields?.["Campagnelink"] || '#'} target="_blank" rel="noopener noreferrer">
-                  <img
+                  <Image
                     src={afbeelding}
                     alt={c.fields?.["Campagnenaam"] || 'Campagne afbeelding'}
-                    style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                    width={600}
+                    height={400}
+                    style={{ objectFit: 'cover', width: '100%', height: '200px' }}
                   />
                 </a>
               ) : (
