@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 
 export default function Home() {
   const [campaigns, setCampaigns] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [selectedFilter, setSelectedFilter] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [committedSearchTerm, setCommittedSearchTerm] = useState('')
+  const router = useRouter()
+  const { filter } = router.query
+
+  const [selectedFilter, setSelectedFilter] = useState(filter || '')
+  const [showCompleted, setShowCompleted] = useState(filter === 'voltooid')
 
   useEffect(() => {
     async function fetchCampaigns() {
@@ -39,8 +44,17 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const handleFilterChange = (filter) => {
-    setSelectedFilter((prev) => (prev === filter ? '' : filter))
+  const handleFilterChange = (filterKey) => {
+    if (filterKey === 'voltooid') {
+      setShowCompleted(true)
+      setSelectedFilter('')
+      router.push('?filter=voltooid', undefined, { shallow: true })
+    } else {
+      setShowCompleted(false)
+      const newFilter = selectedFilter === filterKey ? '' : filterKey
+      setSelectedFilter(newFilter)
+      router.push(`?filter=${newFilter}`, undefined, { shallow: true })
+    }
   }
 
   const filteredCampaigns = campaigns.filter((campaign) => {
@@ -48,10 +62,14 @@ export default function Home() {
     const matchSearch = name.includes(committedSearchTerm.toLowerCase())
     if (!matchSearch) return false
 
+    const opgehaald = campaign.fields['Opgehaald bedrag'] || 0
+    const doel = campaign.fields['Doelbedrag'] || 1
+    const percentage = (opgehaald / doel) * 100
+
+    if (showCompleted) return percentage >= 100
+    if (percentage >= 100) return false
+
     if (selectedFilter === 'bijna_compleet') {
-      const opgehaald = campaign.fields['Opgehaald bedrag']
-      const doel = campaign.fields['Doelbedrag']
-      const percentage = (opgehaald / doel) * 100
       return percentage >= 85 && percentage < 100
     }
     if (selectedFilter === 'nieuw') {
@@ -186,14 +204,15 @@ export default function Home() {
             { key: 'bijna_compleet', label: 'Bijna compleet' },
             { key: 'nieuw', label: 'Nieuwe campagnes' },
             { key: 'lang_niet_doneren', label: 'Lang niet gedoneerd' },
-            { key: 'weeskind', label: 'Weeskinderen' }
+            { key: 'weeskind', label: 'Weeskinderen' },
+            { key: 'voltooid', label: 'Voltooide campagnes' }
           ].map(({ key, label }) => (
             <button
               key={key}
               onClick={() => handleFilterChange(key)}
               style={{
-                backgroundColor: selectedFilter === key ? '#b2c2a2' : '#e0e0e0',
-                color: selectedFilter === key ? 'white' : '#333',
+                backgroundColor: (selectedFilter === key || (key === 'voltooid' && showCompleted)) ? '#b2c2a2' : '#e0e0e0',
+                color: (selectedFilter === key || (key === 'voltooid' && showCompleted)) ? 'white' : '#333',
                 padding: '0.5rem 1rem',
                 borderRadius: '999px',
                 border: 'none',
