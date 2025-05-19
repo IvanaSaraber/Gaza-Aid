@@ -7,19 +7,22 @@ export default function Home() {
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [committedSearchTerm, setCommittedSearchTerm] = useState('')
-  const router = useRouter()
-  const { filter } = router.query
+  const [selectedFilters, setSelectedFilters] = useState([])
+  const [showCompleted, setShowCompleted] = useState(false)
 
-  const [selectedFilter, setSelectedFilter] = useState(filter || '')
-  const [showCompleted, setShowCompleted] = useState(filter === 'voltooid')
+  const router = useRouter()
+  const filtersFromUrl = router.query.filters?.split(',') || []
+
+  useEffect(() => {
+    setSelectedFilters(filtersFromUrl.filter(Boolean))
+    setShowCompleted(router.query.completed === 'true')
+  }, [router.query])
 
   useEffect(() => {
     async function fetchCampaigns() {
       setLoading(true)
       try {
-        const params = new URLSearchParams()
-        if (selectedFilter === 'weeskind') params.append('weeskind', 'true')
-        const res = await fetch(`/api/campaigns?${params.toString()}`)
+        const res = await fetch(`/api/campaigns`)
         if (!res.ok) throw new Error(`API error: ${res.status}`)
         const data = await res.json()
         setCampaigns(data.records || [])
@@ -31,7 +34,7 @@ export default function Home() {
       }
     }
     fetchCampaigns()
-  }, [selectedFilter])
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,17 +47,25 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const handleFilterChange = (filterKey) => {
-    if (filterKey === 'voltooid') {
-      setShowCompleted(true)
-      setSelectedFilter('')
-      router.push('?filter=voltooid', undefined, { shallow: true })
-    } else {
-      setShowCompleted(false)
-      const newFilter = selectedFilter === filterKey ? '' : filterKey
-      setSelectedFilter(newFilter)
-      router.push(`?filter=${newFilter}`, undefined, { shallow: true })
-    }
+  const updateUrl = (filters, completed) => {
+    const query = {}
+    if (filters.length > 0) query.filters = filters.join(',')
+    if (completed) query.completed = 'true'
+    router.push({ pathname: '/', query }, undefined, { shallow: true })
+  }
+
+  const toggleFilter = (key) => {
+    const newFilters = selectedFilters.includes(key)
+      ? selectedFilters.filter((f) => f !== key)
+      : [...selectedFilters, key]
+    setSelectedFilters(newFilters)
+    updateUrl(newFilters, showCompleted)
+  }
+
+  const toggleCompleted = () => {
+    const newValue = !showCompleted
+    setShowCompleted(newValue)
+    updateUrl(selectedFilters, newValue)
   }
 
   const filteredCampaigns = campaigns.filter((campaign) => {
@@ -69,19 +80,15 @@ export default function Home() {
     if (showCompleted) return percentage >= 100
     if (percentage >= 100) return false
 
-    if (selectedFilter === 'bijna_compleet') {
-      return percentage >= 85 && percentage < 100
-    }
-    if (selectedFilter === 'nieuw') {
-      return new Date(campaign.fields['Startdatum']) >= new Date(new Date().setDate(new Date().getDate() - 7))
-    }
-    if (selectedFilter === 'lang_niet_doneren') {
-      return campaign.fields['DagenGeenDonatie'] >= 7
-    }
-    if (selectedFilter === 'weeskind') {
-      return campaign.fields['Weeskind'] === true
-    }
-    return true
+    const matches = selectedFilters.every((filter) => {
+      if (filter === 'bijna_compleet') return percentage >= 85 && percentage < 100
+      if (filter === 'nieuw') return new Date(campaign.fields['Startdatum']) >= new Date(new Date().setDate(new Date().getDate() - 7))
+      if (filter === 'lang_niet_doneren') return campaign.fields['DagenGeenDonatie'] >= 7
+      if (filter === 'weeskind') return campaign.fields['Weeskind'] === true
+      return true
+    })
+
+    return matches
   })
 
   const totaalOpgehaald = campaigns.reduce((sum, c) => sum + (c.fields['Opgehaald bedrag'] || 0), 0)
@@ -91,7 +98,7 @@ export default function Home() {
 
   return (
     <div style={{ padding: '2rem', backgroundColor: '#f7f9fc', minHeight: '100vh' }}>
-      {/* Hero header */}
+      {/* Header */}
       <div style={{
         backgroundColor: '#eaf0eb',
         color: '#2e3d2f',
@@ -112,7 +119,7 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Zoek & filterblok */}
+      {/* Zoek & filters */}
       <div style={{
         backgroundColor: '#f0f4f1',
         padding: '2rem',
@@ -120,8 +127,7 @@ export default function Home() {
         marginBottom: '2rem',
         boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
         maxWidth: '800px',
-        marginLeft: 'auto',
-        marginRight: 'auto'
+        margin: '0 auto'
       }}>
         <h2 style={{
           fontSize: '1.5rem',
@@ -133,22 +139,13 @@ export default function Home() {
           Zoek en filter campagnes
         </h2>
 
-        {/* Zoekbalk + knoppen */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '0.5rem',
-          marginBottom: '1.5rem'
-        }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
           <input
             type="text"
             placeholder="Zoek op campagnenaam..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') setCommittedSearchTerm(searchTerm)
-            }}
+            onKeyDown={(e) => { if (e.key === 'Enter') setCommittedSearchTerm(searchTerm) }}
             style={{
               padding: '0.75rem 1rem',
               borderRadius: '10px',
@@ -193,26 +190,19 @@ export default function Home() {
         </div>
 
         {/* Filterknoppen */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          flexWrap: 'wrap',
-          gap: '0.5rem',
-          marginBottom: '1rem'
-        }}>
+        <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
           {[
             { key: 'bijna_compleet', label: 'Bijna compleet' },
             { key: 'nieuw', label: 'Nieuwe campagnes' },
             { key: 'lang_niet_doneren', label: 'Lang niet gedoneerd' },
-            { key: 'weeskind', label: 'Weeskinderen' },
-            { key: 'voltooid', label: 'Voltooide campagnes' }
+            { key: 'weeskind', label: 'Weeskinderen' }
           ].map(({ key, label }) => (
             <button
               key={key}
-              onClick={() => handleFilterChange(key)}
+              onClick={() => toggleFilter(key)}
               style={{
-                backgroundColor: (selectedFilter === key || (key === 'voltooid' && showCompleted)) ? '#b2c2a2' : '#e0e0e0',
-                color: (selectedFilter === key || (key === 'voltooid' && showCompleted)) ? 'white' : '#333',
+                backgroundColor: selectedFilters.includes(key) ? '#b2c2a2' : '#e0e0e0',
+                color: selectedFilters.includes(key) ? 'white' : '#333',
                 padding: '0.5rem 1rem',
                 borderRadius: '999px',
                 border: 'none',
@@ -223,9 +213,22 @@ export default function Home() {
               {label}
             </button>
           ))}
+          <button
+            onClick={toggleCompleted}
+            style={{
+              backgroundColor: showCompleted ? '#b2c2a2' : '#e0e0e0',
+              color: showCompleted ? 'white' : '#333',
+              padding: '0.5rem 1rem',
+              borderRadius: '999px',
+              border: 'none',
+              cursor: 'pointer',
+              fontWeight: '500'
+            }}
+          >
+            Voltooide campagnes
+          </button>
         </div>
 
-        {/* Resultaatteller */}
         <p style={{ textAlign: 'center', marginTop: '1.5rem', color: '#555' }}>
           {filteredCampaigns.length} campagne{filteredCampaigns.length === 1 ? '' : 's'} gevonden
         </p>
@@ -327,7 +330,7 @@ export default function Home() {
         <p>Een initiatief van United Muslim Mothers (UMM)</p>
       </footer>
 
-      {/* Back to top button */}
+      {/* Back to top */}
       <button
         id="topBtn"
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
