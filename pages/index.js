@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import Image from 'next/image'
 
 export default function Home() {
   const [campaigns, setCampaigns] = useState([])
@@ -119,7 +118,7 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Filters & zoek */}
+      {/* Zoek & filters */}
       <div style={{
         backgroundColor: '#f0f4f1',
         padding: '2rem',
@@ -155,7 +154,7 @@ export default function Home() {
               fontSize: '1rem'
             }}
           />
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', width: '100%', justifyContent: 'center' }}>
             <button
               onClick={() => setCommittedSearchTerm(searchTerm)}
               style={{
@@ -165,7 +164,8 @@ export default function Home() {
                 border: 'none',
                 borderRadius: '999px',
                 fontWeight: 'bold',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                minWidth: '120px'
               }}
             >
               Zoek
@@ -181,7 +181,8 @@ export default function Home() {
                 padding: '0.5rem 1.2rem',
                 border: 'none',
                 borderRadius: '999px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                minWidth: '120px'
               }}
             >
               Toon alles
@@ -190,7 +191,7 @@ export default function Home() {
         </div>
 
         {/* Filterknoppen */}
-        <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
           {[
             { key: 'bijna_compleet', label: 'Bijna compleet' },
             { key: 'lang_niet_doneren', label: 'Lang niet gedoneerd' },
@@ -206,25 +207,32 @@ export default function Home() {
                 borderRadius: '999px',
                 border: 'none',
                 cursor: 'pointer',
-                fontWeight: '500'
+                fontWeight: '500',
+                minWidth: '140px'
               }}
             >
               {label}
             </button>
           ))}
+        </div>
+
+        {/* Voltooide campagnes knop */}
+        <div style={{ marginTop: '1rem', textAlign: 'center' }}>
           <button
             onClick={toggleCompleted}
             style={{
               backgroundColor: showCompleted ? '#4caf50' : 'transparent',
               color: showCompleted ? 'white' : '#4caf50',
-              padding: '0.5rem 1rem',
+              padding: '0.5rem 1.2rem',
               borderRadius: '8px',
               border: '2px solid #4caf50',
               cursor: 'pointer',
-              fontWeight: '600'
+              fontWeight: '600',
+              width: '100%',
+              maxWidth: '300px'
             }}
           >
-            Toon voltooide campagnes
+            {showCompleted ? 'Verberg voltooide campagnes' : 'Toon voltooide campagnes'}
           </button>
         </div>
 
@@ -233,10 +241,10 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Campagnes */}
+      {/* Campagnekaarten */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
         gap: '2rem'
       }}>
         {filteredCampaigns.map((c) => {
@@ -246,8 +254,11 @@ export default function Home() {
           const afbeelding = Array.isArray(c.fields?.Afbeelding) ? c.fields.Afbeelding[0]?.url : c.fields?.Afbeelding
 
           return (
-            <div
+            <a
               key={c.id}
+              href={c.fields?.["Campagnelink"] || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 border: '1px solid #e0e0e0',
                 borderRadius: '16px',
@@ -257,19 +268,18 @@ export default function Home() {
                 flexDirection: 'column',
                 boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
                 transition: 'transform 0.2s ease',
-                cursor: 'pointer'
+                textDecoration: 'none',
+                color: 'inherit'
               }}
               onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
               onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
               {afbeelding ? (
-                <a href={c.fields?.["Campagnelink"] || '#'} target="_blank" rel="noopener noreferrer">
-                  <img
-                    src={afbeelding}
-                    alt={c.fields?.["Campagnenaam"] || 'Campagne afbeelding'}
-                    style={{ width: '100%', height: '200px', objectFit: 'cover' }}
-                  />
-                </a>
+                <img
+                  src={afbeelding}
+                  alt={c.fields?.["Campagnenaam"] || 'Campagne afbeelding'}
+                  style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                />
               ) : (
                 <div style={{ width: '100%', height: '200px', backgroundColor: '#eee' }} />
               )}
@@ -301,25 +311,18 @@ export default function Home() {
                 </div>
               </div>
               <div style={{ padding: '1rem' }}>
-                <a
-                  href={c.fields?.["Campagnelink"] || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: 'block',
-                    backgroundColor: '#b2c2a2',
-                    color: 'white',
-                    textAlign: 'center',
-                    padding: '0.75rem',
-                    borderRadius: '8px',
-                    fontWeight: 'bold',
-                    textDecoration: 'none'
-                  }}
-                >
+                <div style={{
+                  backgroundColor: '#b2c2a2',
+                  color: 'white',
+                  textAlign: 'center',
+                  padding: '0.75rem',
+                  borderRadius: '8px',
+                  fontWeight: 'bold'
+                }}>
                   Bekijk campagne
-                </a>
+                </div>
               </div>
-            </div>
+            </a>
           )
         })}
       </div>
