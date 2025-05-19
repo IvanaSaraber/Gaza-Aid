@@ -264,12 +264,10 @@ export default function Home() {
             >
               {afbeelding ? (
                 <a href={c.fields?.["Campagnelink"] || '#'} target="_blank" rel="noopener noreferrer">
-                  <Image
+                  <img
                     src={afbeelding}
                     alt={c.fields?.["Campagnenaam"] || 'Campagne afbeelding'}
-                    width={600}
-                    height={400}
-                    style={{ objectFit: 'cover', width: '100%', height: '200px' }}
+                    style={{ width: '100%', height: '200px', objectFit: 'cover' }}
                   />
                 </a>
               ) : (
